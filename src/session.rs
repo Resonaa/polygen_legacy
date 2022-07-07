@@ -1,15 +1,15 @@
+use crate::{zip_options, concat_vec};
 use rocket::{
-    http::{CookieJar},
+    http::CookieJar,
     outcome::IntoOutcome,
     request::{self, FromRequest, Request},
     response::Redirect,
     serde::{Deserialize, Serialize},
 };
 use rocket_dyn_templates::{context, Template};
-use crate::zip_options;
 
-pub mod login;
-pub mod register;
+mod login;
+mod register;
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
@@ -19,13 +19,13 @@ pub struct Login<'r> {
 }
 
 #[derive(Debug)]
-struct User(i32, String);
+pub struct UserGuard(i32, String);
 
 #[rocket::async_trait]
-impl<'r> FromRequest<'r> for User {
+impl<'r> FromRequest<'r> for UserGuard {
     type Error = std::convert::Infallible;
 
-    async fn from_request(request: &'r Request<'_>) -> request::Outcome<User, Self::Error> {
+    async fn from_request(request: &'r Request<'_>) -> request::Outcome<UserGuard, Self::Error> {
         fn get<T>(jar: &CookieJar, x: &str) -> Option<T>
         where
             T: std::str::FromStr,
@@ -35,12 +35,12 @@ impl<'r> FromRequest<'r> for User {
         }
 
         let jar = request.cookies();
-        zip_options!(User, get(jar, "uid"), get(jar, "username")).or_forward(())
+        zip_options!(UserGuard, get(jar, "uid"), get(jar, "username")).or_forward(())
     }
 }
 
 #[get("/")]
-fn index(user: User) -> Template {
+fn index(user: UserGuard) -> Template {
     Template::render(
         "index",
         context! {
@@ -56,8 +56,5 @@ fn no_auth_index() -> Redirect {
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    routes![
-        index,
-        no_auth_index
-    ]
+    concat_vec![routes![index, no_auth_index], login::routes(), register::routes()]
 }

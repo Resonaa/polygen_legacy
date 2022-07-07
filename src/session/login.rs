@@ -1,16 +1,15 @@
-use rocket::serde::json::{json, Json, Value};
+use super::{Login, UserGuard};
+use crate::{db::Db, success, DbError};
 use rocket::{
     http::{Cookie, CookieJar},
     response::Redirect,
+    serde::json::{json, Json, Value},
 };
+use rocket_db_pools::{sqlx, Connection};
 use rocket_dyn_templates::Template;
 
-use super::{Login, User};
-use crate::db::Db;
-use crate::{error, success, DbError};
-
 #[get("/login")]
-fn login(_user: User) -> Redirect {
+fn login(_user: UserGuard) -> Redirect {
     Redirect::to(uri!("/"))
 }
 
@@ -20,29 +19,26 @@ fn login_page() -> Template {
 }
 
 #[post("/login", data = "<login>")]
-fn post_login(jar: &CookieJar<'_>, login: Json<Login<'_>>) -> Result<Value, Value> {
-    let db = Db::new().conv()?;
-    let mut stmt = db
-        .prepare(&format!(
-            "SELECT uid, password FROM user WHERE username = '{}'",
-            login.username
-        ))
-        .conv()?;
-    let dat = stmt
-        .query_map([], |row| {
-            Ok((row.get::<usize, i32>(0)?, row.get::<usize, String>(1)?))
-        })
-        .conv()?
-        .next()
-        .ok_or_else(|| error!("用户名或密码错误"))?
-        .unwrap();
-    if login.password == dat.1 {
-        jar.add_private(Cookie::new("username", login.username.to_string()));
-        jar.add_private(Cookie::new("uid", dat.0.to_string()));
-        Ok(success!("登录成功"))
-    } else {
-        Err(error!("用户名或密码错误"))
-    }
+async fn post_login(
+    mut db: Connection<Db>,
+    jar: &CookieJar<'_>,
+    login: Json<Login<'_>>,
+) -> Result<Value, Value> {
+    let password = sha256::digest(login.password);
+
+    let uid = sqlx::query!(
+        "SELECT uid FROM user WHERE username = ?1 AND password = ?2",
+        login.username,
+        password
+    )
+    .fetch_one(&mut *db)
+    .await
+    .my_conv("用户名或密码错误")?.uid;
+
+    jar.add_private(Cookie::new("username", login.username.to_string()));
+    jar.add_private(Cookie::new("uid", uid.to_string()));
+
+    success!("登录成功")
 }
 
 #[post("/logout")]

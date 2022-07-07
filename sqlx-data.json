@@ -1,0 +1,187 @@
+{
+  "db": "SQLite",
+  "1a6eaa1b8bafbaf8fb4b218aa886b363479825cc35b602507eb7867a35521503": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM post WHERE pid = ?"
+  },
+  "1f127f058b9e7acb3580e32c65448d2e20603c8d84411cdf80da49ae710b21bb": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 3
+      }
+    },
+    "query": "INSERT INTO post (author, time, content) VALUES (?1, ?2, ?3)"
+  },
+  "5ad4fb2c35b6bd4854c7aed9ae1506e588d6fb9abcbd9da2f24491b01844507b": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "INSERT INTO user (username, password) VALUES (?1, ?2)"
+  },
+  "79e78977f3a86fec66be8258dc5629be820fdf4dd09ef94c8725e1da0f26e290": {
+    "describe": {
+      "columns": [
+        {
+          "name": "title",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT title, content FROM announcement WHERE aid = ?"
+  },
+  "80c2c898bae4c85495cff2240ce46671def64ca5941e3f7ceca70af072f45a29": {
+    "describe": {
+      "columns": [
+        {
+          "name": "uid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "SELECT uid FROM user WHERE username = ?1 AND password = ?2"
+  },
+  "8305f9e4d650c3534fafe30f5825c57e93444b7877ab6289175a1fc1ed41b379": {
+    "describe": {
+      "columns": [
+        {
+          "name": "author",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "time",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT author, time, content FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?"
+  },
+  "a82f4c1d94cff45cc624aac4bd4408bf5e9ee5f92ab6ca9a316f49ae3eb97cfc": {
+    "describe": {
+      "columns": [
+        {
+          "name": "title",
+          "ordinal": 0,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 1,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 0
+      }
+    },
+    "query": "SELECT title, content FROM announcement"
+  },
+  "c608ef238b04f5827302902195b89765a57a93b8f8a7f3a66a6e776e1d315dfa": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "UPDATE post SET content = ?1 WHERE pid = ?2"
+  },
+  "dd8ad118e1c8d10293a17498c678f0555e8636c8655640e3739b7833658f4792": {
+    "describe": {
+      "columns": [
+        {
+          "name": "uid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT uid FROM user WHERE username = ?"
+  },
+  "dfaf5ff261001afb90537fccdc91b61a569d24160e9565d03ed57bed2646a2d6": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 3
+      }
+    },
+    "query": "UPDATE announcement SET title = ?1, content = ?2 WHERE aid = ?3"
+  },
+  "edf493f8ad5d1fbc9139c0c099ac885e8fef4e5711d0beaa62490c2242bf6069": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM announcement WHERE aid = ?"
+  },
+  "ff871a28fe8e67cd24254293f927d03196a64ca22d61f5fb0756630d463baabf": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "INSERT INTO announcement (title, content) VALUES (?1, ?2)"
+  }
+}

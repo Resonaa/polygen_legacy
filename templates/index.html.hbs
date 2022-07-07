@@ -1,48 +1,118 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 
 <head>
     <title>首页 - polygen</title>
     <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.12.4/jquery.min.js"></script>
+    <link href="/css/index.css" rel="stylesheet">
+    <script src="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.min.js?ver=20190219"></script>
+    <link href="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.css?ver=20190219" rel="stylesheet">
+    <script src="/js/index.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/marked/2.0.3/marked.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script>
+    <script src="/js/algorithm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
 
 <body>
-    <header class="p-3 mb-3 border-bottom">
-        <div class="container">
-            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
-                    <img src="img/polygen.png" />
+    <nav class="navbar navbar-expand-sm navbar-light p-3 mb-3 border-bottom fixed-top align-items-center">
+        <div class="container-fluid d-flex flex-wrap">
+            <ul class="navbar-nav">
+                <a class="navbar-brand" href="/">
+                    <img src="/img/polygen.png" alt="logo" width="120">
                 </a>
-
-                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                    <li><a href="/game" class="nav-link px-2 link-dark">大厅</a></li>
-                    <li><a href="/about" class="nav-link px-2 link-dark">关于</a></li>
-                </ul>
-
-                <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-                    <input type="search" class="form-control" placeholder="搜索..." aria-label="Search">
-                </form>
-
-                <div class="dropdown text-end">
-                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        {{ username }}
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/game">
+                        <i class="fa fa-gamepad"></i>
+                        游戏
                     </a>
-                    <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
-                        <li><a class="dropdown-item" href="/user/{{ uid }}">主页</a></li>
-                        <li><a class="dropdown-item" href="/settings">设置</a></li>
-                        <li>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/leaderboard">
+                        <i class="fa fa-signal"></i>
+                        排行榜
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/webadmin">
+                        <i class="fa fa-dashboard"></i>
+                        管理后台
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <div class="dropdown dropstart text-end flex-end">
+                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ username }}
+                        </a>
+
+                        <ul class="dropdown-menu mx-0 shadow" style="width: 220px;" aria-labelledby="dropdownUser1">
+                            <li>
+                                <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ uid }}">
+                                    <i class="fa fa-address-card-o"></i>
+                                    主页
+                                </a>
+                            </li>
+
+                            <li>
+                                <a class="dropdown-item d-flex gap-2 align-items-center" href="/settings">
+                                    <i class="fa fa-gear"></i>
+                                    设置
+                                </a>
+                            </li>
+
                             <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="javascript: void(0)"
-                                onclick="$.post('/logout', {}, _ => window.location.href='/');">登出</a></li>
-                    </ul>
+
+                            <li>
+                                <a class="dropdown-item text-danger d-flex gap-2 align-items-center"
+                                    href="javascript: $.post('/logout', {}, _ => window.location.href='/')">
+                                    <i class="fa fa-sign-out"></i>
+                                    登出
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="main" class="row polygen-main">
+        <div id="sLeft" class="container col-2">
+            <div class="container polygen-item">
+                <h5>公告</h5>
+                <div id="announcement">
+                    <div class="spinner-border"></div>
                 </div>
             </div>
         </div>
-    </header>
+
+        <div id="main-part" class="container col-8">
+            <div class="conatiner polygen-item">
+                <button id="post" class="btn btn-primary">发布说说</button>
+            </div>
+        </div>
+
+        <div id="sRight" class="container col-2">
+            <div class="container polygen-item">
+                <h5>最新回放</h5>
+                <div id="replay">
+                    暂无数据
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

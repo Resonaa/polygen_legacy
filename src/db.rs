@@ -1,30 +1,48 @@
-use rusqlite::{Connection, Params, Result, Statement};
+use rocket::{
+    fairing::{self, AdHoc},
+    serde::{Deserialize, Serialize},
+    Build, Rocket,
+};
+use rocket_db_pools::{sqlx, Database};
 
-pub struct Db {
-    conn: Connection,
+#[derive(Database)]
+#[database("db")]
+pub struct Db(sqlx::SqlitePool);
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(crate = "rocket::serde")]
+pub struct User {
+    uid: i32,
+    username: String,
+    password: String,
 }
 
-impl Db {
-    pub fn new() -> Result<Self> {
-        let conn = Connection::open("data.db")?;
-        conn.execute(
-            "CREATE TABLE IF NOT EXISTS user (
-                      uid              INTEGER PRIMARY KEY,
-                      username         TEXT,
-                      password         TEXT,
-                      exp              INTEGER
-                      )",
-            [],
-        )?;
+pub async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
+    match Db::fetch(&rocket) {
+        Some(db) => match sqlx::migrate!("./db/migrations").run(&**db).await {
+            // Some(db) => match sqlx::query(
+            //     &rocket::tokio::fs::read_to_string("db/migrations/20220707063636_create-table.sql")
+            //         .await
+            //         .unwrap(),
+            // )
+            // .execute(&db.0)
+            // .await
+            // {
+            Ok(_) => Ok(rocket),
+            Err(e) => {
+                error!("Failed to initialize SQLx database: {}", e);
+                Err(rocket)
+            }
+        },
 
-        Ok(Self { conn })
+        None => Err(rocket),
     }
+}
 
-    pub fn execute(&self, sql: &str, params: impl Params) -> Result<usize> {
-        self.conn.execute(sql, params)
-    }
-
-    pub fn prepare(&self, sql: &str) -> Result<Statement<'_>> {
-        self.conn.prepare(sql)
-    }
+pub fn stage() -> AdHoc {
+    AdHoc::on_ignite("SQLx Stage", |rocket| async {
+        rocket
+            .attach(Db::init())
+            .attach(AdHoc::try_on_ignite("SQLx Migrations", run_migrations))
+    })
 }

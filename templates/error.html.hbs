@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>错误 - polygen</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <link href="/css/index.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm navbar-light p-3 border-bottom fixed-top">
+        <div class="container-fluid d-flex flex-wrap">
+            <ul class="navbar-nav">
+                <a class="navbar-brand" href="/">
+                    <img src="/img/polygen.png" alt="logo" width="120">
+                </a>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="container" class="container polygen-item polygen-main">
+        <h1>{{status}}</h1>
+
+        3 秒后将返回上一页
+
+        <script>
+            setTimeout(() => window.history.back(), 3000);
+        </script>
+    </div>
+</body>
+
+</html>
