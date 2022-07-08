@@ -4,8 +4,6 @@
     background: rgba(255, 255, 255, .7);
     overflow: hidden;
     margin-bottom: 8px;
-    -webkit-box-shadow: 0 1px 3px rgb(26 26 26 / 10%);
-    box-shadow: 0 1px 3px rgb(26 26 26 / 10%);
 }
 
 .post-meta {
@@ -31,4 +29,8 @@
 
 p {
     margin-bottom: auto;
+}
+
+#load-more {
+    background: white;
 }

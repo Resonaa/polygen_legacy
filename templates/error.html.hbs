@@ -19,11 +19,12 @@
         </div>
     </nav>
 
-    <div id="container" class="container polygen-item polygen-main">
-        <h1>{{status}}</h1>
+    <div class="polygen-main">
+        <div class="polygen-item">
+            <h1>{{status}}</h1>
 
-        3 秒后将返回上一页
-
+            <span>3 秒后将返回上一页</span>
+        </div>
         <script>
             setTimeout(() => window.history.back(), 3000);
         </script>

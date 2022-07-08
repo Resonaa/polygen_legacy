@@ -60,7 +60,7 @@ $(() => {
         </article>`);
 
     function addPost() {
-        $(".loader").text("加载中...");
+        $(".loader").html(`<div class="spinner-border"></div>`);
 
         ajax("get", `/api/post?page=${page}`, undefined, undefined, dat => {
             for (let i of dat) {
@@ -69,7 +69,7 @@ $(() => {
                 $(".post-author").last().html(userLink(i[0]));
             }
 
-            $(".loader").text("点击查看更多...");
+            $(".loader").html("点击查看更多...");
         });
     }
 
