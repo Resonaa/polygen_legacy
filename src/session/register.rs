@@ -33,12 +33,6 @@ async fn post_register(
         return error!("密码长度应为 6 ~ 20 位");
     }
 
-    sqlx::query!("SELECT uid FROM user WHERE username = ?", register.username)
-        .fetch_one(&mut *db)
-        .await
-        .err()
-        .my_conv("用户名已存在")?;
-
     let password = sha256::digest(register.password);
     sqlx::query!(
         "INSERT INTO user (username, password) VALUES (?1, ?2)",
@@ -47,7 +41,7 @@ async fn post_register(
     )
     .execute(&mut *db)
     .await
-    .conv()?;
+    .my_conv("用户名已存在")?;
 
     let uid = sqlx::query!("SELECT uid FROM user WHERE username = ?", register.username)
         .fetch_one(&mut *db)

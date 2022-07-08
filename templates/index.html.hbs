@@ -11,9 +11,6 @@
     <link href="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.css?ver=20190219" rel="stylesheet">
     <script src="/js/index.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/marked/2.0.3/marked.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/katex.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.0/dist/contrib/auto-render.min.js"></script>
     <script src="/js/algorithm.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
@@ -60,7 +57,7 @@
                         <ul class="dropdown-menu mx-0 shadow" style="width: 220px;" aria-labelledby="dropdownUser1">
                             <li>
                                 <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ uid }}">
-                                    <i class="fa fa-address-card-o"></i>
+                                    <i class="fa fa-address-book"></i>
                                     主页
                                 </a>
                             </li>
@@ -76,7 +73,8 @@
 
                             <li>
                                 <a class="dropdown-item text-danger d-flex gap-2 align-items-center"
-                                    href="javascript: $.post('/logout', {}, _ => window.location.href='/')">
+                                    href="javascript: void(0);"
+                                    onclick="$.post('/logout', {}, _ => window.location.href='/');">
                                     <i class="fa fa-sign-out"></i>
                                     登出
                                 </a>
@@ -88,9 +86,9 @@
         </div>
     </nav>
 
-    <div id="main" class="row polygen-main">
-        <div id="sLeft" class="container col-2">
-            <div class="container polygen-item">
+    <div id="main" class="polygen-main" style="display: flex;">
+        <div id="sLeft" class="sidebar">
+            <div class="polygen-item">
                 <h5>公告</h5>
                 <div id="announcement">
                     <div class="spinner-border"></div>
@@ -98,14 +96,20 @@
             </div>
         </div>
 
-        <div id="main-part" class="container col-8">
-            <div class="conatiner polygen-item">
-                <button id="post" class="btn btn-primary">发布说说</button>
+        <div id="main-part">
+            <div class="polygen-item">
+                <div id="editor-container" style="height: 170px">
+                    <div id="post-editor"></div>
+                </div>
+                <br>
+                <div>
+                    <button id="post" class="btn btn-primary">发布说说</button>
+                </div>
             </div>
         </div>
 
-        <div id="sRight" class="container col-2">
-            <div class="container polygen-item">
+        <div id="sRight" class="sidebar">
+            <div class="polygen-item">
                 <h5>最新回放</h5>
                 <div id="replay">
                     暂无数据

@@ -20,14 +20,6 @@ pub struct User {
 pub async fn run_migrations(rocket: Rocket<Build>) -> fairing::Result {
     match Db::fetch(&rocket) {
         Some(db) => match sqlx::migrate!("./db/migrations").run(&**db).await {
-            // Some(db) => match sqlx::query(
-            //     &rocket::tokio::fs::read_to_string("db/migrations/20220707063636_create-table.sql")
-            //         .await
-            //         .unwrap(),
-            // )
-            // .execute(&db.0)
-            // .await
-            // {
             Ok(_) => Ok(rocket),
             Err(e) => {
                 error!("Failed to initialize SQLx database: {}", e);

@@ -74,3 +74,7 @@ class ModalEditor {
         $(`#modal-${this.id}`).modal("show");
     }
 }
+
+function markdownRenderer(s) {
+    return marked(s.trim()).replace(/(\n)*$/, "");
+}

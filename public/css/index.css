@@ -27,5 +27,20 @@ a {
 }
 
 .polygen-main {
-    margin-top: 85px;
+    margin-top: 82px;
+}
+
+.sidebar {
+    width: 15%;
+}
+
+#main-part {
+    width: 70%;
+    padding: 0 8px;
+}
+
+.post-content {
+    max-height: 200px;
+    display: block;
+    overflow-y: auto;
 }
