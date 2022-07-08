@@ -1,5 +1,5 @@
 use super::{Login, UserGuard};
-use crate::{db::Db, success, DbError};
+use crate::{db::Db, error, success, DbError};
 use rocket::{
     http::{Cookie, CookieJar},
     response::Redirect,
@@ -15,7 +15,7 @@ fn login(_user: UserGuard) -> Redirect {
 
 #[get("/login", rank = 2)]
 fn login_page() -> Template {
-    Template::render("login", ())
+    Template::render("login.min", ())
 }
 
 #[post("/login", data = "<login>")]
@@ -24,19 +24,29 @@ async fn post_login(
     jar: &CookieJar<'_>,
     login: Json<Login<'_>>,
 ) -> Result<Value, Value> {
+    if login.captcha.to_lowercase()
+        != jar
+            .get_private("captcha")
+            .conv()?
+            .value()
+            .to_string()
+            .to_lowercase()
+    {
+        return error!("验证码错误");
+    }
+
     let password = sha256::digest(login.password);
 
-    let uid = sqlx::query!(
+    sqlx::query!(
         "SELECT uid FROM user WHERE username = ?1 AND password = ?2",
         login.username,
         password
     )
     .fetch_one(&mut *db)
     .await
-    .my_conv("用户名或密码错误")?.uid;
+    .my_conv("用户名或密码错误")?;
 
     jar.add_private(Cookie::new("username", login.username.to_string()));
-    jar.add_private(Cookie::new("uid", uid.to_string()));
 
     success!("登录成功")
 }

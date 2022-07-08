@@ -1,0 +1,34 @@
+.post {
+    position: relative;
+    width: 100%;
+    background: rgba(255, 255, 255, .7);
+    overflow: hidden;
+    margin-bottom: 8px;
+    -webkit-box-shadow: 0 1px 3px rgb(26 26 26 / 10%);
+    box-shadow: 0 1px 3px rgb(26 26 26 / 10%);
+}
+
+.post-meta {
+    padding: 10px 15px;
+    line-height: 1.2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: flex;
+}
+
+.post-content {
+    max-height: 200px;
+    display: block;
+    overflow-y: auto;
+    background: white;
+    padding: 15px;
+}
+
+.post-time {
+    color: #999;
+}
+
+p {
+    margin-bottom: auto;
+}

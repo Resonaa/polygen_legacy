@@ -21,9 +21,9 @@ async fn list(mut db: Connection<Db>, _user: UserGuard, page: i32) -> Result<Val
     .await
     .conv()?;
 
-    let res: Vec<(i64, &String, &String)> = dat
+    let res: Vec<(&String, &String, &String)> = dat
         .iter()
-        .map(|x| (x.author, &x.time, &x.content))
+        .map(|x| (&x.author, &x.time, &x.content))
         .collect();
 
     success!(res)
@@ -42,12 +42,7 @@ async fn create(
         return error!("说说长度应为 1~100000 个字符");
     }
 
-    let author = jar
-        .get_private("uid")
-        .conv()?
-        .value()
-        .parse::<i32>()
-        .conv()?;
+    let author = jar.get_private("username").conv()?.value().to_string();
 
     let time = Local::now().format("%F %T").to_string();
 
@@ -102,5 +97,5 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Res
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    return routes![list, create, update, delete];
+    routes![list, create, update, delete]
 }

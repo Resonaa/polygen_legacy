@@ -1,4 +1,4 @@
-use crate::{zip_options, concat_vec};
+use crate::{concat_vec, zip_options};
 use rocket::{
     http::CookieJar,
     outcome::IntoOutcome,
@@ -16,10 +16,11 @@ mod register;
 pub struct Login<'r> {
     username: &'r str,
     password: &'r str,
+    captcha: &'r str,
 }
 
 #[derive(Debug)]
-pub struct UserGuard(i32, String);
+pub struct UserGuard(String);
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for UserGuard {
@@ -35,17 +36,16 @@ impl<'r> FromRequest<'r> for UserGuard {
         }
 
         let jar = request.cookies();
-        zip_options!(UserGuard, get(jar, "uid"), get(jar, "username")).or_forward(())
+        zip_options!(UserGuard, get(jar, "username")).or_forward(())
     }
 }
 
 #[get("/")]
 fn index(user: UserGuard) -> Template {
     Template::render(
-        "index",
+        "index.min",
         context! {
-            uid: user.0,
-            username: user.1,
+            username: user.0,
         },
     )
 }
@@ -56,5 +56,9 @@ fn no_auth_index() -> Redirect {
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    concat_vec![routes![index, no_auth_index], login::routes(), register::routes()]
+    concat_vec![
+        routes![index, no_auth_index],
+        login::routes(),
+        register::routes()
+    ]
 }

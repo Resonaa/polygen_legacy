@@ -6,9 +6,10 @@
     <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.12.4/jquery.min.js"></script>
-    <script src="/js/register.js"></script>
-    <link href="/css/index.css" rel="stylesheet">
-    <script src="/js/algorithm.js"></script>
+    <script src="/js/register.min.js"></script>
+    <link href="/css/index.min.css" rel="stylesheet">
+    <link href="/css/session.min.css" rel="stylesheet">
+    <script src="/js/algorithm.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
 </head>
@@ -38,28 +39,52 @@
         </div>
     </nav>
 
-    <div id="container" class="container polygen-item polygen-main">
-        <h2>注册</h2>
-        <form id="login">
-            <div class="mb-3 mt-3">
-                <input id="username" type="username" class="form-control" placeholder="用户名">
-            </div>
+    <div id="container" class="auth-box">
+        <div class="auth-card">
+            <form id="register" class="auth-form">
+                <img src="/img/polygen.png">
 
-            <div class="mb-3">
-                <input id="password" type="password" class="form-control" placeholder="密码">
+                <div class="auth-gruop">
+                    <div class="mb-2 mt-2">
+                        <label for="username" class="form-label">用户名</label>
+                        <div class="auth-group">
+                            <input id="username" type="username" class="form-control" placeholder="用户名" name="username">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="password" class="form-label">密码</label>
+                        <div class="auth-group">
+                            <input id="password" type="password" class="form-control" placeholder="密码" name="password">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="auth-group">
+                            <input id="password2" type="password" class="form-control" placeholder="再次输入密码">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label for="captcha" class="form-label">验证码</label>
+                        <div class="auth-group">
+                            <input id="captcha" type="text" class="form-control" placeholder="验证码">
+                            &nbsp;
+                            <img src="/api/captcha" class="captcha"></img>
+                        </div>
+                    </div>
 
-            </div>
-            <div class="mb-3">
-                <input id="password2" type="password" class="form-control" placeholder="再次输入密码">
-            </div>
+                    <button id="submit" type="button" class="btn btn-primary auth-sumbit">
+                        <span class="spinner-border spinner-border-sm" style="display: none;"></span>
+                        注册
+                    </button>
+                    <hr>
+                </div>
 
-            <button id="submit" type="button" class="btn btn-primary">
-                <span class="spinner-border spinner-border-sm" style="display: none;"></span>
-                注册
-            </button>
-        </form>
+                <div>
+                    <span>已有账号？</span>
+                    <a href="/login">登录</a>
+                </div>
+            </form>
+        </div>
     </div>
-
 </body>
 
 </html>

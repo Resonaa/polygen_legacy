@@ -1,4 +1,6 @@
 target
 db/db*
-private/*.pem
-private/*.p12
+test/
+public/js/*.min.js
+public/css/*.min.css
+templates/*.min.html.hbs

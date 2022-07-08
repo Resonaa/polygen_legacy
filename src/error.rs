@@ -4,7 +4,7 @@ use rocket_dyn_templates::{Template, context};
 #[catch(default)]
 fn default(status: Status, _req: &Request) -> Template {
     Template::render(
-        "error",
+        "error.min",
         context! {
             status: status.to_string()
         },

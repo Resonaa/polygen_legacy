@@ -6,12 +6,13 @@
     <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/1.12.4/jquery.min.js"></script>
-    <link href="/css/index.css" rel="stylesheet">
+    <link href="/css/index.min.css" rel="stylesheet">
+    <link href="/css/post.min.css" rel="stylesheet">
     <script src="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.min.js?ver=20190219"></script>
     <link href="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.css?ver=20190219" rel="stylesheet">
-    <script src="/js/index.js"></script>
+    <script src="/js/index.min.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/marked/2.0.3/marked.js"></script>
-    <script src="/js/algorithm.js"></script>
+    <script src="/js/algorithm.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert@2.1.2/dist/sweetalert.min.js"></script>
     <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
@@ -56,7 +57,7 @@
 
                         <ul class="dropdown-menu mx-0 shadow" style="width: 220px;" aria-labelledby="dropdownUser1">
                             <li>
-                                <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ uid }}">
+                                <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ username }}">
                                     <i class="fa fa-address-book"></i>
                                     主页
                                 </a>
@@ -72,8 +73,7 @@
                             <hr class="dropdown-divider">
 
                             <li>
-                                <a class="dropdown-item text-danger d-flex gap-2 align-items-center"
-                                    href="javascript: void(0);"
+                                <a class="dropdown-item text-danger d-flex gap-2 align-items-center no-href"
                                     onclick="$.post('/logout', {}, _ => window.location.href='/');">
                                     <i class="fa fa-sign-out"></i>
                                     登出
@@ -89,7 +89,7 @@
     <div id="main" class="polygen-main" style="display: flex;">
         <div id="sLeft" class="sidebar">
             <div class="polygen-item">
-                <h5>公告</h5>
+                <h5 class="module">公告</h5>
                 <div id="announcement">
                     <div class="spinner-border"></div>
                 </div>
@@ -106,11 +106,15 @@
                     <button id="post" class="btn btn-primary">发布说说</button>
                 </div>
             </div>
+
+            <div id="load-more" class="polygen-item module">
+                <a class="loader">点击查看更多...</a>
+            </div>
         </div>
 
         <div id="sRight" class="sidebar">
             <div class="polygen-item">
-                <h5>最新回放</h5>
+                <h5 class="module">最新回放</h5>
                 <div id="replay">
                     暂无数据
                 </div>

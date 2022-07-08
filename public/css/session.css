@@ -1,0 +1,40 @@
+.auth-box {
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.auth-card {
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.auth-form {
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    padding: 1.3em 3em;
+}
+
+.auth-sumbit {
+    width: 100%;
+    border-color: rgb(52, 152, 219);
+    background-color: rgb(52, 152, 219);
+}
+
+hr {
+    height: 2px !important;
+    background-color: rgb(232, 232, 232);
+    border: none;
+    width: 100%;
+}
+
+.captcha {
+    height: 40px;
+    cursor: pointer;
+}
+
+.auth-group {
+    display: flex;
+    align-items: center;
+}

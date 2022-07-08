@@ -1,11 +1,11 @@
 $(() => {
-    ajax("get", "/api/announcement", undefined, () => $("#announcement")[0].innerHTML = "数据库错误", dat => {
-        $("#announcement")[0].innerHTML = "";
+    ajax("get", "/api/announcement", undefined, () => $("#announcement").html("数据库错误"), dat => {
+        $("#announcement").html("");
 
         let titleTemplate = Handlebars.compile(`
-                <div class="container polygen-item">
-                    <a href="javascript: void(0);" data-bs-toggle="modal" data-bs-target="#modal-{{id}}">{{title}}</a>
-                </div>`);
+                <article class="announcement">
+                    <a class="no-href" data-bs-toggle="modal" data-bs-target="#modal-{{id}}">{{title}}</a>
+                </article>`);
 
         let modalTemplate = Handlebars.compile(`
                 <div class="modal fade" id="modal-{{id}}">
@@ -32,7 +32,7 @@ $(() => {
             let title = dat[i][0], content = dat[i][1];
             $("#announcement").append(titleTemplate({ id: i, title: title }));
             $("#sLeft").append(modalTemplate({ id: i, title: title }));
-            $(".modal-body").last()[0].innerHTML = markdownRenderer(content);
+            $(".modal-body").last().html(markdownRenderer(content));
         }
     });
 
@@ -48,24 +48,35 @@ $(() => {
 
     let page = 1;
     let postTemplate = Handlebars.compile(`
-        <article class="polygen-item">
-            <header class="comment-hd">
-                {{author}} <span style="color: grey;">{{time}}</span>
+        <article class="post">
+            <header class="post-hd">
+                <div class="post-meta">
+                    <div class="post-author"></div>
+                    <span class="post-time">&nbsp;{{time}}</span>
+                </div>
             </header>
 
-            <div class="post-content">
-                {{content}}
-            </div>
+            <div class="post-content"></div>
         </article>`);
 
     function addPost() {
+        $(".loader").text("加载中...");
+
         ajax("get", `/api/post?page=${page}`, undefined, undefined, dat => {
             for (let i of dat) {
-                $("#main-part").append(postTemplate({ author: i[0], time: i[1] }));
-                $(".post-content").last()[0].innerHTML = markdownRenderer(i[2]);
+                $("#load-more").before(postTemplate({ time: i[1] }));
+                $(".post-content").last().html(addAt(markdownRenderer(i[2])));
+                $(".post-author").last().html(userLink(i[0]));
             }
-        })
+
+            $(".loader").text("点击查看更多...");
+        });
     }
 
     addPost();
-})
+
+    $("#load-more").click(() => {
+        page++;
+        addPost();
+    });
+});

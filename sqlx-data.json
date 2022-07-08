@@ -1,23 +1,5 @@
 {
   "db": "SQLite",
-  "120c4502601d52bf3044affaf9d4cfd8ce87cc2ea214dcd562555a3d02bdf398": {
-    "describe": {
-      "columns": [
-        {
-          "name": "username",
-          "ordinal": 0,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Right": 1
-      }
-    },
-    "query": "SELECT username FROM user WHERE uid = ?"
-  },
   "1a6eaa1b8bafbaf8fb4b218aa886b363479825cc35b602507eb7867a35521503": {
     "describe": {
       "columns": [],
@@ -96,7 +78,7 @@
         {
           "name": "author",
           "ordinal": 0,
-          "type_info": "Int64"
+          "type_info": "Text"
         },
         {
           "name": "time",

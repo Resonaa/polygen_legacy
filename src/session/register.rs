@@ -15,7 +15,7 @@ fn register(_user: UserGuard) -> Redirect {
 
 #[get("/register", rank = 2)]
 fn register_page() -> Template {
-    Template::render("register", ())
+    Template::render("register.min", ())
 }
 
 #[post("/register", data = "<register>")]
@@ -24,6 +24,17 @@ async fn post_register(
     jar: &CookieJar<'_>,
     register: Json<Login<'_>>,
 ) -> Result<Value, Value> {
+    if register.captcha.to_lowercase()
+        != jar
+            .get_private("captcha")
+            .conv()?
+            .value()
+            .to_string()
+            .to_lowercase()
+    {
+        return error!("验证码错误");
+    }
+
     if !is_valid_username(register.username) {
         return error!("用户名长度应为 3 ~ 16 位，包含中文、英文、数字和_");
     }
@@ -43,14 +54,7 @@ async fn post_register(
     .await
     .my_conv("用户名已存在")?;
 
-    let uid = sqlx::query!("SELECT uid FROM user WHERE username = ?", register.username)
-        .fetch_one(&mut *db)
-        .await
-        .conv()?
-        .uid;
-
     jar.add_private(Cookie::new("username", register.username.to_string()));
-    jar.add_private(Cookie::new("uid", uid.to_string()));
 
     success!("注册成功")
 }

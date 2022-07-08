@@ -13,6 +13,12 @@ sha256 = "1.0.3"
 sqlx = { version = "0.5", features = ["macros", "migrate", "offline"] }
 chrono = "0.4.19"
 dotenv = "0.15.0"
+captcha = "0.0.9"
+
+[build-dependencies]
+minify-js = "0.1.5"
+css-minify = "0.2.2"
+minify-html = "0.9.2"
 
 [profile.release]
 lto = true

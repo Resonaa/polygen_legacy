@@ -12,7 +12,7 @@ CREATE TABLE announcement (
 
 CREATE TABLE post (
     pid INTEGER PRIMARY KEY NOT NULL,
-    author INTEGER NOT NULL,
+    author TEXT NOT NULL,
     time TEXT NOT NULL,
     content TEXT NOT NULL
 );
