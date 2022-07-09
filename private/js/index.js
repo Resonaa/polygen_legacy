@@ -32,7 +32,7 @@ $(() => {
             let title = dat[i][0], content = dat[i][1];
             $("#announcement").append(titleTemplate({ id: i, title: title }));
             $("#sLeft").append(modalTemplate({ id: i, title: title }));
-            $(".modal-body").last().html(markdownRenderer(content));
+            $(".modal-body").last().html(textRenderer(content));
         }
     });
 
@@ -65,7 +65,7 @@ $(() => {
         ajax("get", `/api/post?page=${page}`, undefined, undefined, dat => {
             for (let i of dat) {
                 $("#load-more").before(postTemplate({ time: i[1] }));
-                $(".post-content").last().html(addAt(markdownRenderer(i[2])));
+                $(".post-content").last().html(addAt(textRenderer(i[2])));
                 $(".post-author").last().html(userLink(i[0]));
             }
 

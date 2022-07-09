@@ -14,8 +14,21 @@ function ajax(type, url, data, error, success) {
     });
 }
 
-function markdownRenderer(s) {
-    return marked(s.trim()).replace(/(\n)*$/, "");
+function textRenderer(s) {
+    let a = document.createElement("div");
+    a.innerHTML = s.trim();
+
+    renderMathInElement(a, {
+        delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+        ],
+        throwOnError: false
+    });
+
+    return DOMPurify.sanitize(marked.parse(a.innerHTML).replace(/(\n)*$/, ""));
 }
 
 function userLink(username) {
