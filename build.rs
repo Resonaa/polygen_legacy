@@ -4,13 +4,9 @@ use minify_js::minify as minify_js;
 use std::fs;
 
 fn main() {
-    for entry in fs::read_dir("public/js").unwrap() {
+    for entry in fs::read_dir("private/js").unwrap() {
         let dir = entry.unwrap();
         let file_name = dir.file_name().into_string().unwrap();
-
-        if file_name.ends_with(".min.js") {
-            continue;
-        }
 
         let mut path = "public/js/".to_string();
         path.push_str(&file_name.replace(".js", ".min.js"));
@@ -22,13 +18,9 @@ fn main() {
         fs::write(path, out).unwrap();
     }
 
-    for entry in fs::read_dir("public/css").unwrap() {
+    for entry in fs::read_dir("private/css").unwrap() {
         let dir = entry.unwrap();
         let file_name = dir.file_name().into_string().unwrap();
-
-        if file_name.ends_with(".min.css") {
-            continue;
-        }
 
         let mut path = "public/css/".to_string();
         path.push_str(&file_name.replace(".css", ".min.css"));
@@ -39,13 +31,9 @@ fn main() {
         fs::write(path, out).unwrap();
     }
 
-    for entry in fs::read_dir("templates/").unwrap() {
+    for entry in fs::read_dir("private/templates/").unwrap() {
         let dir = entry.unwrap();
         let file_name = dir.file_name().into_string().unwrap();
-
-        if file_name.ends_with(".min.html.hbs") {
-            continue;
-        }
 
         let mut path = "templates/".to_string();
         path.push_str(&file_name.replace(".html.hbs", ".min.html.hbs"));

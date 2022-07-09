@@ -1,6 +1,6 @@
 target
 db/db*
 test/
-public/js/*.min.js
-public/css/*.min.css
-templates/*.min.html.hbs
+public/js/*.js
+public/css/*.css
+templates/*.hbs

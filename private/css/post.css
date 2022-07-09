@@ -13,6 +13,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     display: flex;
+    font-size: 14px;
 }
 
 .post-content {
@@ -33,4 +34,5 @@ p {
 
 #load-more {
     background: white;
+    text-align: center;
 }
