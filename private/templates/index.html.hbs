@@ -18,13 +18,12 @@
     <script src="/js/algorithm.min.js"></script>
     <script src="https://cdn.staticfile.org/handlebars.js/4.7.7/handlebars.min.js"></script>
     <script src="https://cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.15.4/css/fontawesome.min.css">
     <script src="https://cdn.staticfile.org/dompurify/2.3.8/purify.min.js"></script>
     <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.0/katex.min.css">
     <script defer src="https://cdn.staticfile.org/KaTeX/0.16.0/katex.min.js"></script>
     <script defer src="https://cdn.staticfile.org/KaTeX/0.16.0/contrib/auto-render.min.js"></script>
     <script src="https://cdn.staticfile.org/highlight.js/11.5.1/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/11.5.1/styles/atom-one-light.min.css">
 </head>
 
 <body>
@@ -36,21 +35,21 @@
                 </a>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/game">
-                        <i class="fa fa-gamepad fa-fw"></i>
+                        <i class="far fa-crown fa-fw"></i>
                         游戏
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/leaderboard">
-                        <i class="fa fa-signal fa-fw"></i>
+                        <i class="far fa-signal fa-fw"></i>
                         排行榜
                     </a>
                 </li>
 
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="/webadmin">
-                        <i class="fa fa-dashboard fa-fw"></i>
+                        <i class="far fa-tachometer-alt fa-fw"></i>
                         管理后台
                     </a>
                 </li>
@@ -67,14 +66,14 @@
                         <ul class="dropdown-menu mx-0 shadow" aria-labelledby="dropdownUser">
                             <li>
                                 <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ username }}">
-                                    <i class="fa fa-user fa-fw"></i>
+                                    <i class="far fa-user fa-fw"></i>
                                     主页
                                 </a>
                             </li>
 
                             <li>
                                 <a class="dropdown-item d-flex gap-2 align-items-center" href="/settings">
-                                    <i class="fa fa-gear fa-fw"></i>
+                                    <i class="far fa-cog fa-fw"></i>
                                     设置
                                 </a>
                             </li>
@@ -84,7 +83,7 @@
                             <li>
                                 <a class="dropdown-item text-danger d-flex gap-2 align-items-center no-href"
                                     onclick="$.post('/logout', {}, _ => window.location.href='/');">
-                                    <i class="fa fa-sign-out fa-fw"></i>
+                                    <i class="far fa-sign-out-alt fa-fw"></i>
                                     登出
                                 </a>
                             </li>
