@@ -52,7 +52,7 @@ $(() => {
             <header class="post-hd">
                 <div class="post-meta">
                     <div class="post-author"></div>
-                    <span class="post-time">&nbsp;{{time}}</span>
+                    <span class="post-time">&nbsp;<time title="{{realTime}}">{{deltaTime}}</time></span>
                 </div>
             </header>
 
@@ -64,7 +64,7 @@ $(() => {
 
         ajax("get", `/api/post?page=${page}`, undefined, undefined, dat => {
             for (let i of dat) {
-                $("#load-more").before(postTemplate({ time: i[1] }));
+                $("#load-more").before(postTemplate({ realTime: i[1], deltaTime: deltaTime(i[1]) }));
                 $(".post-content").last().html(addAt(textRenderer(i[2])));
                 $(".post-author").last().html(userLink(i[0]));
             }
@@ -79,4 +79,6 @@ $(() => {
         page++;
         addPost();
     });
+
+    setInterval(() => $("time").each((_, e) => e.innerHTML = deltaTime(e.title)), 1000);
 });

@@ -35,4 +35,5 @@ p {
 #load-more {
     background: white;
     text-align: center;
+    user-select: none;
 }

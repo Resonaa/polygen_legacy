@@ -1,6 +1,5 @@
-use crate::{concat_vec, zip_options};
+use crate::concat_vec;
 use rocket::{
-    http::CookieJar,
     outcome::IntoOutcome,
     request::{self, FromRequest, Request},
     response::Redirect,
@@ -27,16 +26,11 @@ impl<'r> FromRequest<'r> for UserGuard {
     type Error = std::convert::Infallible;
 
     async fn from_request(request: &'r Request<'_>) -> request::Outcome<UserGuard, Self::Error> {
-        fn get<T>(jar: &CookieJar, x: &str) -> Option<T>
-        where
-            T: std::str::FromStr,
-        {
-            jar.get_private(x)
-                .and_then(|cookie| cookie.value().parse::<T>().ok())
-        }
-
-        let jar = request.cookies();
-        zip_options!(UserGuard, get(jar, "username")).or_forward(())
+        request
+            .cookies()
+            .get_private("username")
+            .map(|cookie| UserGuard(cookie.value().to_string()))
+            .or_forward(())
     }
 }
 

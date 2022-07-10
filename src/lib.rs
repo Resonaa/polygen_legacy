@@ -24,18 +24,6 @@ pub trait DbError<T> {
 }
 
 #[macro_export]
-/// User, Some(1), Some(2) -> User(1, 2)
-macro_rules! zip_options {
-    ($s: ident, $($x: expr),+) => {
-        (|| {
-            Some($s($ (
-                $x?
-            ),+))
-        })()
-    };
-}
-
-#[macro_export]
 macro_rules! concat_vec {
     [$($x: expr),*] => {
         {

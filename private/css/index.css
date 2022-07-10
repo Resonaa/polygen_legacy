@@ -1,3 +1,7 @@
+nav {
+    user-select: none;
+}
+
 .polygen-item {
     position: relative;
     width: 100%;
@@ -30,10 +34,26 @@ a {
     padding: 0 8px;
 }
 
-.at .loader {
+a {
     color: #3498db;
+}
+
+.at {
+    font-weight: bold;
 }
 
 .no-href {
     cursor: pointer;
+}
+
+.mp-editor-toolbar {
+    user-select: none;
+}
+
+.btn-primary {
+    background-color: #0e90d2;
+}
+
+button {
+    line-height: 1.25 !important;
 }
