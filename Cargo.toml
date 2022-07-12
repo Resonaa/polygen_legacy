@@ -14,6 +14,11 @@ sqlx = { version = "0.5", features = ["macros", "migrate", "offline"] }
 chrono = "0.4.19"
 dotenv = "0.15.0"
 captcha = "0.0.9"
+tokio-tungstenite = "0.17.1"
+tungstenite = "0.17.2"
+futures-util = "0.3.21"
+env_logger = "0.9.0"
+log = "0.4.17"
 
 [build-dependencies]
 minify-js = "0.1.5"

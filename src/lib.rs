@@ -9,6 +9,7 @@ pub mod error;
 mod responds;
 pub mod session;
 pub mod post;
+pub mod game;
 
 use regex::Regex;
 use rocket::serde::json::{json, Value};
