@@ -2,7 +2,7 @@
 extern crate rocket;
 
 use dotenv::dotenv;
-use polygen::{api, db, session, error};
+use polygen::{api, db, error, post, session};
 use rocket::fs::FileServer;
 use rocket_dyn_templates::Template;
 
@@ -15,6 +15,7 @@ async fn rocket() -> _ {
         .attach(db::stage())
         .mount("/", FileServer::from("public/"))
         .mount("/", session::routes())
+        .mount("/", post::routes())
         .mount("/api", api::routes())
         .register("/", error::catchers())
 }

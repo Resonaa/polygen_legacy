@@ -19,7 +19,9 @@ pub struct Login<'r> {
 }
 
 #[derive(Debug)]
-pub struct UserGuard(String);
+pub struct UserGuard {
+    pub username: String,
+}
 
 #[rocket::async_trait]
 impl<'r> FromRequest<'r> for UserGuard {
@@ -29,7 +31,9 @@ impl<'r> FromRequest<'r> for UserGuard {
         request
             .cookies()
             .get_private("username")
-            .map(|cookie| UserGuard(cookie.value().to_string()))
+            .map(|cookie| UserGuard {
+                username: cookie.value().to_string(),
+            })
             .or_forward(())
     }
 }
@@ -39,7 +43,7 @@ fn index(user: UserGuard) -> Template {
     Template::render(
         "index.min",
         context! {
-            username: user.0,
+            username: user.username,
         },
     )
 }

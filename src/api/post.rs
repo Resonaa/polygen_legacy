@@ -9,24 +9,59 @@ use rocket::{
 };
 use rocket_db_pools::Connection;
 
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+struct Post<'r> {
+    pid: i64,
+    author: &'r str,
+    time: &'r str,
+    content: String,
+}
+
+impl<'r> Post<'r> {
+    pub fn new(pid: i64, author: &'r str, time: &'r str, content: String) -> Self {
+        Self {
+            pid,
+            author,
+            time,
+            content,
+        }
+    }
+}
+
 #[get("/post?<page>")]
-async fn list(mut db: Connection<Db>, _user: UserGuard, page: i32) -> Result<Value, Value> {
+async fn list(mut db: Connection<Db>, _user: UserGuard, page: i64) -> Result<Value, Value> {
     let page = (page - 1) * 10;
 
     let dat = sqlx::query!(
-        "SELECT author, time, content FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?",
+        "SELECT * FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?",
         page
     )
     .fetch_all(&mut *db)
     .await
     .conv()?;
 
-    let res: Vec<(&String, &String, &String)> = dat
+    let res: Vec<_> = dat
         .iter()
-        .map(|x| (&x.author, &x.time, &x.content))
+        .map(|x| Post::new(x.pid, &x.author, &x.time, x.content.to_string()))
         .collect();
 
     success!(res)
+}
+
+#[get("/post?<pid>", rank = 2)]
+async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Result<Value, Value> {
+    let dat = sqlx::query!("SELECT * FROM post WHERE pid = ?", pid)
+        .fetch_one(&mut *db)
+        .await
+        .conv()?;
+
+    success!(Post::new(
+        dat.pid,
+        &dat.author,
+        &dat.time,
+        dat.content.to_string()
+    ))
 }
 
 #[post("/post", data = "<post>")]
@@ -61,16 +96,16 @@ async fn create(
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct UpdatePost<'r> {
-    pid: i32,
-    content: &'r str,
+struct UpdatePost {
+    pid: i64,
+    content: String,
 }
 
 #[put("/post", data = "<update_post>")]
 async fn update(
     mut db: Connection<Db>,
     _user: UserGuard,
-    update_post: Json<UpdatePost<'_>>,
+    update_post: Json<UpdatePost>,
 ) -> Result<Value, Value> {
     sqlx::query!(
         "UPDATE post SET content = ?1 WHERE pid = ?2",
@@ -96,6 +131,21 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Res
     success!("删除成功")
 }
 
+#[get("/post/commentamount?<pid>")]
+async fn comment_amount(
+    mut db: Connection<Db>,
+    _user: UserGuard,
+    pid: i64,
+) -> Result<Value, Value> {
+    let dat = sqlx::query!("SELECT cid FROM comment WHERE pid = ?", pid)
+        .fetch_all(&mut *db)
+        .await
+        .conv()?
+        .len();
+
+    success!(dat)
+}
+
 pub fn routes() -> Vec<rocket::Route> {
-    routes![list, create, update, delete]
+    routes![list, get, create, update, delete, comment_amount]
 }

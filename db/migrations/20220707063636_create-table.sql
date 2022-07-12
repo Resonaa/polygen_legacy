@@ -16,3 +16,11 @@ CREATE TABLE post (
     time TEXT NOT NULL,
     content TEXT NOT NULL
 );
+
+CREATE TABLE comment (
+    cid INTEGER PRIMARY KEY NOT NULL,
+    pid INTEGER NOT NULL,
+    author TEXT NOT NULL,
+    time TEXT NOT NULL,
+    content TEXT NOT NULL
+);

@@ -1,8 +1,12 @@
 function ajax(type, url, data, error, success) {
+    if (type != "get") {
+        data = JSON.stringify(data);
+    }
+
     $.ajax({
         type: type,
         url: url,
-        data: JSON.stringify(data),
+        data: data,
         dataType: "json",
         success: res => {
             if (res.status == "success") {
@@ -12,6 +16,20 @@ function ajax(type, url, data, error, success) {
             }
         }
     });
+}
+
+function ajaxSync(type, url, data) {
+    if (type != "get") {
+        data = JSON.stringify(data);
+    }
+
+    return $.ajax({
+        type: type,
+        url: url,
+        data: data,
+        dataType: "json",
+        async: false
+    }).responseJSON.msg;
 }
 
 function textRenderer(s) {
@@ -30,7 +48,7 @@ function textRenderer(s) {
         hljs.highlightElement(el);
     });
 
-    return a.innerHTML;
+    return addAt(a.innerHTML);
 }
 
 function userLink(username) {

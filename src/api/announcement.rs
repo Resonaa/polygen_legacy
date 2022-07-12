@@ -5,48 +5,70 @@ use rocket::serde::{
 };
 use rocket_db_pools::Connection;
 
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+struct Announcement<'r> {
+    aid: i64,
+    title: &'r str,
+    content: String,
+}
+
+impl<'r> Announcement<'r> {
+    pub fn new(aid: i64, title: &'r str, content: String) -> Self {
+        Self {
+            aid,
+            title,
+            content,
+        }
+    }
+}
+
 #[get("/announcement")]
 async fn list(mut db: Connection<Db>, _user: UserGuard) -> Result<Value, Value> {
-    let dat = sqlx::query!("SELECT title, content FROM announcement")
+    let dat = sqlx::query!("SELECT * FROM announcement")
         .fetch_all(&mut *db)
         .await
         .conv()?;
 
-    let res: Vec<(&String, &String)> = dat
+    let res: Vec<_> = dat
         .iter()
-        .map(|x| (&x.title, &x.content))
+        .map(|x| Announcement::new(x.aid, &x.title, x.content.to_string()))
         .collect();
 
     success!(res)
 }
 
-#[get("/announcement/<aid>")]
-async fn read(mut db: Connection<Db>, _user: UserGuard, aid: i32) -> Result<Value, Value> {
-    let dat = sqlx::query!("SELECT title, content FROM announcement WHERE aid = ?", aid)
+#[get("/announcement?<aid>", rank = 2)]
+async fn get(mut db: Connection<Db>, _user: UserGuard, aid: i32) -> Result<Value, Value> {
+    let dat = sqlx::query!("SELECT * FROM announcement WHERE aid = ?", aid)
         .fetch_one(&mut *db)
         .await
         .conv()?;
 
-    success!((dat.title, dat.content))
+    success!(Announcement::new(
+        dat.aid,
+        &dat.title,
+        dat.content.to_string()
+    ))
 }
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct Announcement<'r> {
+struct CreateAnnouncement<'r> {
     title: &'r str,
     content: &'r str,
 }
 
-#[post("/announcement", data = "<announcement>")]
+#[post("/announcement", data = "<create_announcement>")]
 async fn create(
     mut db: Connection<Db>,
     _user: UserGuard,
-    announcement: Json<Announcement<'_>>,
+    create_announcement: Json<CreateAnnouncement<'_>>,
 ) -> Result<Value, Value> {
     sqlx::query!(
         "INSERT INTO announcement (title, content) VALUES (?1, ?2)",
-        announcement.title,
-        announcement.content
+        create_announcement.title,
+        create_announcement.content
     )
     .execute(&mut *db)
     .await
@@ -55,19 +77,11 @@ async fn create(
     success!("发布成功")
 }
 
-#[derive(Serialize, Deserialize)]
-#[serde(crate = "rocket::serde")]
-struct UpdateAnnouncement<'r> {
-    aid: i32,
-    title: &'r str,
-    content: &'r str,
-}
-
 #[put("/announcement", data = "<update_announcement>")]
 async fn update(
     mut db: Connection<Db>,
     _user: UserGuard,
-    update_announcement: Json<UpdateAnnouncement<'_>>,
+    update_announcement: Json<Announcement<'_>>,
 ) -> Result<Value, Value> {
     sqlx::query!(
         "UPDATE announcement SET title = ?1, content = ?2 WHERE aid = ?3",
@@ -94,5 +108,5 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, aid: Json<i32>) -> Res
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    return routes![list, read, create, update, delete];
+    return routes![list, get, create, update, delete];
 }

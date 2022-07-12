@@ -8,6 +8,7 @@ pub mod db;
 pub mod error;
 mod responds;
 pub mod session;
+pub mod post;
 
 use regex::Regex;
 use rocket::serde::json::{json, Value};

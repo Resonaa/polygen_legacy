@@ -1,5 +1,35 @@
 {
   "db": "SQLite",
+  "1473dac6d2a926ab93d8224b911813fbca6f6e03bb15010f87d73a66b48af190": {
+    "describe": {
+      "columns": [
+        {
+          "name": "aid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 0
+      }
+    },
+    "query": "SELECT * FROM announcement"
+  },
   "1a6eaa1b8bafbaf8fb4b218aa886b363479825cc35b602507eb7867a35521503": {
     "describe": {
       "columns": [],
@@ -20,6 +50,58 @@
     },
     "query": "INSERT INTO post (author, time, content) VALUES (?1, ?2, ?3)"
   },
+  "2421b1a2da0ff4942b76885686a36d223161c4b42e514bde78be58947d9f53f6": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "UPDATE comment SET content = ?1 WHERE cid = ?2"
+  },
+  "3884ceee9d0e42c41a7ef90b474323b74caba3e3bb76fcf50b4307a12be0671a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "cid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "pid",
+          "ordinal": 1,
+          "type_info": "Int64"
+        },
+        {
+          "name": "author",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "time",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 4,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 2
+      }
+    },
+    "query": "SELECT * FROM comment WHERE pid = ?1 ORDER BY cid DESC LIMIT 10 OFFSET ?2"
+  },
   "5ad4fb2c35b6bd4854c7aed9ae1506e588d6fb9abcbd9da2f24491b01844507b": {
     "describe": {
       "columns": [],
@@ -29,30 +111,6 @@
       }
     },
     "query": "INSERT INTO user (username, password) VALUES (?1, ?2)"
-  },
-  "79e78977f3a86fec66be8258dc5629be820fdf4dd09ef94c8725e1da0f26e290": {
-    "describe": {
-      "columns": [
-        {
-          "name": "title",
-          "ordinal": 0,
-          "type_info": "Text"
-        },
-        {
-          "name": "content",
-          "ordinal": 1,
-          "type_info": "Text"
-        }
-      ],
-      "nullable": [
-        false,
-        false
-      ],
-      "parameters": {
-        "Right": 1
-      }
-    },
-    "query": "SELECT title, content FROM announcement WHERE aid = ?"
   },
   "80c2c898bae4c85495cff2240ce46671def64ca5941e3f7ceca70af072f45a29": {
     "describe": {
@@ -72,26 +130,32 @@
     },
     "query": "SELECT uid FROM user WHERE username = ?1 AND password = ?2"
   },
-  "8305f9e4d650c3534fafe30f5825c57e93444b7877ab6289175a1fc1ed41b379": {
+  "82fa4d073044bcc65985056b281a97b78e74cd553e4de8e48001b082ee75f8f0": {
     "describe": {
       "columns": [
         {
-          "name": "author",
+          "name": "pid",
           "ordinal": 0,
-          "type_info": "Text"
+          "type_info": "Int64"
         },
         {
-          "name": "time",
+          "name": "author",
           "ordinal": 1,
           "type_info": "Text"
         },
         {
-          "name": "content",
+          "name": "time",
           "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 3,
           "type_info": "Text"
         }
       ],
       "nullable": [
+        false,
         false,
         false,
         false
@@ -100,31 +164,113 @@
         "Right": 1
       }
     },
-    "query": "SELECT author, time, content FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?"
+    "query": "SELECT * FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?"
   },
-  "a82f4c1d94cff45cc624aac4bd4408bf5e9ee5f92ab6ca9a316f49ae3eb97cfc": {
+  "8961b456a622e37495ab4874519a6eaadb38d9514e028684923854c804ff84e1": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "DELETE FROM comment WHERE cid = ?"
+  },
+  "89f64b5d9bab97d6c6a4e084f7b9d957f58fa37a0758c0896572072f3795cf91": {
     "describe": {
       "columns": [
         {
-          "name": "title",
+          "name": "cid",
           "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "pid",
+          "ordinal": 1,
+          "type_info": "Int64"
+        },
+        {
+          "name": "author",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "time",
+          "ordinal": 3,
           "type_info": "Text"
         },
         {
           "name": "content",
-          "ordinal": 1,
+          "ordinal": 4,
           "type_info": "Text"
         }
       ],
       "nullable": [
         false,
+        false,
+        false,
+        false,
         false
       ],
       "parameters": {
-        "Right": 0
+        "Right": 1
       }
     },
-    "query": "SELECT title, content FROM announcement"
+    "query": "SELECT * FROM comment WHERE cid = ?"
+  },
+  "a6d93de5ebe52ffb1a5848804c3e39d561c02cafdc2ec5af115eddd7e717ab1e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "cid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT cid FROM comment WHERE pid = ?"
+  },
+  "b88322453e0f69a503e27e254cc8e734e9539f309f414ea758dd1c1ed879735a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "pid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "author",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "time",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM post WHERE pid = ?"
   },
   "c608ef238b04f5827302902195b89765a57a93b8f8a7f3a66a6e776e1d315dfa": {
     "describe": {
@@ -135,6 +281,24 @@
       }
     },
     "query": "UPDATE post SET content = ?1 WHERE pid = ?2"
+  },
+  "d9f58f55828cd26d7f85b22d1e362bbb732c7230f8f3c22259409f71ab37200a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "pid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT pid FROM post WHERE pid = ?"
   },
   "dd8ad118e1c8d10293a17498c678f0555e8636c8655640e3739b7833658f4792": {
     "describe": {
@@ -163,6 +327,46 @@
       }
     },
     "query": "UPDATE announcement SET title = ?1, content = ?2 WHERE aid = ?3"
+  },
+  "e176b45eebf9bb635c8ab69d5b71c18cf4d2bf37445f92819b7f4e4a4b75ca7c": {
+    "describe": {
+      "columns": [],
+      "nullable": [],
+      "parameters": {
+        "Right": 4
+      }
+    },
+    "query": "INSERT INTO comment (pid, author, time, content) VALUES (?1, ?2, ?3, ?4)"
+  },
+  "ed02fceb8d95432d00e192f5b86d89659a8b7815916ed90b2942160faeaff64e": {
+    "describe": {
+      "columns": [
+        {
+          "name": "aid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "title",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 2,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM announcement WHERE aid = ?"
   },
   "edf493f8ad5d1fbc9139c0c099ac885e8fef4e5711d0beaa62490c2242bf6069": {
     "describe": {
