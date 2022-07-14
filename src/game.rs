@@ -1,8 +1,13 @@
+#![allow(unused)]
+
 use crate::socket::{Event, Socket};
 use rocket::tokio::{
     self,
     time::{sleep, Duration},
 };
+
+mod map;
+mod generator;
 
 pub async fn game() {
     let socket = Socket::new("0.0.0.0:7878", |event| {

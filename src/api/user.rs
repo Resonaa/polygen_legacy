@@ -7,7 +7,7 @@ async fn info(mut db: Connection<Db>, _user: UserGuard, username: String) -> Res
     let dat = sqlx::query!("SELECT uid FROM user WHERE username = ?", username)
         .fetch_one(&mut *db)
         .await
-        .conv()?;
+        .my_conv("未找到该用户")?;
 
     success!(json!({"uid": dat.uid}))
 }

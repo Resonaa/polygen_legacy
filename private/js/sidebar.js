@@ -17,7 +17,7 @@ $(() => {
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                       </div>
                 
-                      <div class="modal-body"></div>
+                      <div class="modal-body needs-render"></div>
                 
                       <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
@@ -32,7 +32,9 @@ $(() => {
             let title = dat[i].title, content = dat[i].content;
             $("#announcement").append(titleTemplate({ id: i, title: title }));
             $("#sLeft").append(modalTemplate({ id: i, title: title }));
-            $(".modal-body").last().html(textRenderer(content));
+            $(".modal-body").last().html(content);
         }
+
+        renderAll();
     });
 });

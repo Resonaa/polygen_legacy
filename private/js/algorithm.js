@@ -29,12 +29,15 @@ function ajaxSync(type, url, data) {
         data: data,
         dataType: "json",
         async: false
-    }).responseJSON.msg;
+    }).responseJSON;
 }
 
-function textRenderer(s) {
-    let a = document.createElement("div");
-    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""));
+function escape2Html(str) {
+    return $("<div/>").html(str).text();
+}
+
+function renderElement(a) {
+    a.innerHTML = DOMPurify.sanitize(marked.parse(a.innerHTML.trim()).replace(/(\n)*$/, ""));
 
     renderMathInElement(a, {
         delimiters: [
@@ -45,18 +48,32 @@ function textRenderer(s) {
     });
 
     a.querySelectorAll('pre code').forEach((el) => {
+        el.innerHTML = escape2Html(el.innerHTML);
         hljs.highlightElement(el);
     });
 
-    return addAt(a.innerHTML);
+    addAt(a);
 }
 
 function userLink(username) {
-    return `<a href="/user/${username}" class="at">${username}</a>`;
+    if (ajaxSync("get", "/api/user/info", { username: username }).status == "error") {
+        return username
+    }
+
+    return `<a href="/user/${username}" class="at" style="color: ${randomColor({ seed: username })}">${username}</a>`;
 }
 
-function addAt(input) {
-    return input.replace(/@([\u4e00-\u9fa5_a-zA-Z0-9]{3,16})/g, `@${userLink("$1")}`);
+function addAt(e) {
+    e.innerHTML = e.innerHTML.replace(/@([\u4e00-\u9fa5_a-zA-Z0-9]{3,16})/g, `@<a class="unfinished-at">$1</a>`);
+
+    e.querySelectorAll('.unfinished-at').forEach((el) => {
+        el.outerHTML = userLink(el.innerHTML);
+    });
+}
+
+function renderAll() {
+    $(".needs-render").each((_, e) => renderElement(e));
+    $(".needs-render").removeClass("needs-render");
 }
 
 function deltaTime(s) {
