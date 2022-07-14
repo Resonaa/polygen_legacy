@@ -10,11 +10,7 @@ use rocket_dyn_templates::Template;
 async fn rocket() -> _ {
     dotenv().ok();
 
-    env_logger::builder().format_timestamp(None).init();
-
-    tokio::spawn(async move {
-        game::start_ws().await;
-    });
+    tokio::spawn(game::game());
 
     rocket::build()
         .attach(Template::fairing())

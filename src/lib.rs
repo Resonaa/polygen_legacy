@@ -6,10 +6,11 @@ extern crate lazy_static;
 pub mod api;
 pub mod db;
 pub mod error;
+pub mod game;
+pub mod post;
 mod responds;
 pub mod session;
-pub mod post;
-pub mod game;
+mod socket;
 
 use regex::Regex;
 use rocket::serde::json::{json, Value};
@@ -37,6 +38,13 @@ macro_rules! concat_vec {
 
             tmp
         }
+    };
+}
+
+#[macro_export]
+macro_rules! message {
+    ($event: expr, $msg: expr) => {
+        json!({"event": $event, "msg": $msg})
     };
 }
 
