@@ -32,9 +32,7 @@ $(() => {
             let title = dat[i].title, content = dat[i].content;
             $("#announcement").append(titleTemplate({ id: i, title: title }));
             $("#sLeft").append(modalTemplate({ id: i, title: title }));
-            $(".modal-body").last().html(content);
+            $(".modal-body").last().html(textRenderer(content));
         }
-
-        renderAll();
     });
 });

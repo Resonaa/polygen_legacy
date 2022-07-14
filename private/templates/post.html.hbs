@@ -30,6 +30,11 @@
 </head>
 
 <body>
+    <script>
+        if (!userExists("{{username}}")) {
+            $.post('/logout', {}, _ => window.location.href = '/login');
+        }
+    </script>
     <nav class="navbar navbar-expand-sm navbar-light p-3 mb-3 border-bottom fixed-top align-items-center">
         <div class="container-fluid d-flex flex-wrap">
             <ul class="navbar-nav">
@@ -85,7 +90,7 @@
 
                             <li>
                                 <a class="dropdown-item text-danger d-flex gap-2 align-items-center no-href"
-                                    onclick="$.post('/logout', {}, _ => window.location.href='/');">
+                                    onclick="$.post('/logout', {}, _ => window.location.href='/login');">
                                     <i class="far fa-sign-out-alt fa-fw"></i>
                                     登出
                                 </a>

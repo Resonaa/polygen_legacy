@@ -32,12 +32,14 @@ function ajaxSync(type, url, data) {
     }).responseJSON;
 }
 
-function escape2Html(str) {
-    return $("<div/>").html(str).text();
+function userExists(username) {
+    return ajaxSync("get", "/api/user/info", { username: username }).status == "success";
 }
 
-function renderElement(a) {
-    a.innerHTML = DOMPurify.sanitize(marked.parse(a.innerHTML.trim()).replace(/(\n)*$/, ""));
+function textRenderer(s) {
+    let a = document.createElement("div");
+
+    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""), { KEEP_CONTENT: false });
 
     renderMathInElement(a, {
         delimiters: [
@@ -47,16 +49,21 @@ function renderElement(a) {
         throwOnError: false
     });
 
-    a.querySelectorAll('pre code').forEach((el) => {
-        el.innerHTML = escape2Html(el.innerHTML);
+    a.querySelectorAll('pre code').forEach(el => {
+        if (el.classList.contains("hljs")) {
+            return;
+        }
+
         hljs.highlightElement(el);
     });
 
     addAt(a);
+
+    return a.innerHTML;
 }
 
 function userLink(username) {
-    if (ajaxSync("get", "/api/user/info", { username: username }).status == "error") {
+    if (!userExists(username)) {
         return username
     }
 
@@ -69,11 +76,6 @@ function addAt(e) {
     e.querySelectorAll('.unfinished-at').forEach((el) => {
         el.outerHTML = userLink(el.innerHTML);
     });
-}
-
-function renderAll() {
-    $(".needs-render").each((_, e) => renderElement(e));
-    $(".needs-render").removeClass("needs-render");
 }
 
 function deltaTime(s) {

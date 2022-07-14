@@ -26,7 +26,7 @@ $(() => {
 
     let dat = ajaxSync("get", `/api/post?pid=${pid}`, undefined).msg;
     $("#main-part").prepend(postTemplate({ realTime: dat.time, deltaTime: deltaTime(dat.time) }));
-    $(".post-content").last().html(dat.content);
+    $(".post-content").last().html(textRenderer(dat.content));
     $(".post-author").last().html(userLink(dat.author));
     document.title = `${dat.author}的说说 - polygen`;
 
@@ -36,7 +36,7 @@ $(() => {
         ajax("get", `/api/comment?`, { pid: pid, page: page }, undefined, dat => {
             for (let i of dat) {
                 $("#load-more").before(postTemplate({ realTime: i.time, deltaTime: deltaTime(i.time), pid: i.pid }));
-                $(".post-content").last().html(i.content);
+                $(".post-content").last().html(textRenderer(i.content));
                 $(".post-author").last().html(userLink(i.author));
             }
             if (dat.length < 10) {
@@ -44,8 +44,6 @@ $(() => {
             } else {
                 $(".loader").html("点击查看更多...");
             }
-
-            renderAll();
         });
     }
 

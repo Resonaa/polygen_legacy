@@ -28,7 +28,7 @@ $(() => {
         ajax("get", `/api/post?`, { page: page }, undefined, dat => {
             for (let i of dat) {
                 $("#load-more").before(postTemplate({ realTime: i.time, deltaTime: deltaTime(i.time), pid: i.pid, commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: i.pid }).msg }));
-                $(".post-content").last().html(i.content);
+                $(".post-content").last().html(textRenderer(i.content));
                 $(".post-author").last().html(userLink(i.author));
             }
 
@@ -37,8 +37,6 @@ $(() => {
             } else {
                 $(".loader").html("点击查看更多...");
             }
-
-            renderAll();
         });
     }
 
