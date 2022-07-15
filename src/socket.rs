@@ -11,7 +11,7 @@ use rocket::{
         sync::broadcast::{self, Receiver, Sender},
     },
 };
-use std::sync::Arc;
+use std::{error::Error, sync::Arc};
 use tokio_tungstenite::accept_async;
 use tungstenite::{Message, Result};
 
@@ -63,7 +63,7 @@ impl Socket {
         addr: &'static str,
         handler: impl Fn(Event) -> Option<Event> + Send + Sync + Copy + 'static,
     ) -> Self {
-        let listener = TcpListener::bind(addr).await.expect("Can't listen");
+        let listener = TcpListener::bind(addr).await.unwrap();
         info!("WS Listening on: {}", addr);
 
         let (s, _) = broadcast::channel(20);
@@ -97,36 +97,27 @@ async fn handle_connection(
     sender: Sender<Event>,
     mut receiver: Receiver<Event>,
     id: i32,
-    handler: impl Fn(Event) -> Option<Event>,
-) -> Result<()> {
-    let ws_stream = accept_async(stream).await.expect("Failed to accept");
+    handler: impl Fn(Event) -> Option<Event> + Copy,
+) -> Result<(), Box<dyn Error + Send + Sync>> {
+    let ws_stream = accept_async(stream).await?;
     let (mut ws_sender, mut ws_receiver) = ws_stream.split();
 
     loop {
         tokio::select! {
             msg = ws_receiver.next() => {
-                match msg {
-                    Some(msg) => {
-                        let msg = msg?.into_text()?;
-                        match Event::from(id, &msg) {
-                            Ok(event) => {
-                                if let Some(event) = handler(event) {
-                                    sender.send(event).unwrap();
-                                }
-                            },
-                            Err(error) => {
-                                sender.send(Event::new(id, "error", error).unwrap()).unwrap();
-                            }
-                        }
+                if let Some(Ok(msg)) =  msg {
+                    let msg = msg.into_text()?;
+
+                    if let Some(response) = Event::from(id, &msg).ok().and_then(handler) {
+                        sender.send(response)?;
                     }
-                    None => break,
                 }
             },
             msg = receiver.recv() => {
                 match msg {
                     Ok(msg) => {
                         if msg.id == id || msg.id == 0 {
-                            ws_sender.send(Message::Text(json::to_string(&msg).unwrap())).await?;
+                            ws_sender.send(Message::Text(json::to_string(&msg)?)).await?;
                         }
                     }
                     Err(error) => {
@@ -136,6 +127,4 @@ async fn handle_connection(
             }
         }
     }
-
-    Ok(())
 }

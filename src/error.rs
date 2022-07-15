@@ -1,5 +1,5 @@
 use rocket::{http::Status, Catcher, Request};
-use rocket_dyn_templates::{Template, context};
+use rocket_dyn_templates::{context, Template};
 
 #[catch(default)]
 fn default(status: Status, _req: &Request) -> Template {

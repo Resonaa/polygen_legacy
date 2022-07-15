@@ -6,7 +6,7 @@ use rocket::http::{Cookie, CookieJar};
 struct Png(Vec<u8>);
 
 #[get("/captcha")]
-async fn captcha(jar: &CookieJar<'_>) -> Png {
+async fn captcha(jar: &CookieJar<'_>) -> Option<Png> {
     let mut captcha = Captcha::new();
     captcha
         .add_chars(4)
@@ -15,7 +15,7 @@ async fn captcha(jar: &CookieJar<'_>) -> Png {
         .view(220, 120);
     jar.add_private(Cookie::new("captcha", captcha.chars_as_string()));
 
-    Png(captcha.as_png().unwrap())
+    captcha.as_png().map(Png)
 }
 
 pub fn routes() -> Vec<rocket::Route> {
