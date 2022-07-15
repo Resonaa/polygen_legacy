@@ -8,6 +8,7 @@ use rocket::{
     },
 };
 use rocket_db_pools::Connection;
+use std::collections::VecDeque;
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
@@ -16,25 +17,33 @@ struct Post<'r> {
     author: &'r str,
     time: &'r str,
     content: String,
+    parent: i64,
 }
 
 impl<'r> Post<'r> {
-    pub fn new(pid: i64, author: &'r str, time: &'r str, content: String) -> Self {
+    pub fn new(pid: i64, author: &'r str, time: &'r str, content: String, parent: i64) -> Self {
         Self {
             pid,
             author,
             time,
             content,
+            parent,
         }
     }
 }
 
-#[get("/post?<page>")]
-async fn list(mut db: Connection<Db>, _user: UserGuard, page: i64) -> Result<Value, Value> {
+#[get("/post?<parent>&<page>")]
+async fn list(
+    mut db: Connection<Db>,
+    _user: UserGuard,
+    parent: i64,
+    page: i64,
+) -> Result<Value, Value> {
     let page = (page - 1) * 10;
 
     let dat = sqlx::query!(
-        "SELECT * FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?",
+        "SELECT * FROM post WHERE parent = ?1 ORDER BY pid DESC LIMIT 10 OFFSET ?2",
+        parent,
         page
     )
     .fetch_all(&mut *db)
@@ -43,7 +52,7 @@ async fn list(mut db: Connection<Db>, _user: UserGuard, page: i64) -> Result<Val
 
     let res: Vec<_> = dat
         .iter()
-        .map(|x| Post::new(x.pid, &x.author, &x.time, x.content.to_string()))
+        .map(|x| Post::new(x.pid, &x.author, &x.time, x.content.to_string(), x.parent))
         .collect();
 
     success!(res)
@@ -60,18 +69,25 @@ async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Result<Value
         dat.pid,
         &dat.author,
         &dat.time,
-        dat.content.to_string()
+        dat.content.to_string(),
+        dat.parent
     ))
 }
 
-#[post("/post", data = "<post>")]
+#[derive(Serialize, Deserialize)]
+#[serde(crate = "rocket::serde")]
+struct CreatePost {
+    content: String,
+    parent: i64,
+}
+#[post("/post", data = "<create_post>")]
 async fn create(
     mut db: Connection<Db>,
     _user: UserGuard,
     jar: &CookieJar<'_>,
-    post: Json<String>,
+    create_post: Json<CreatePost>,
 ) -> Result<Value, Value> {
-    let s = post.into_inner();
+    let s = &create_post.content;
 
     if !(1..=100000).contains(&s.chars().count()) {
         return error!("说说长度应为 1~100000 个字符");
@@ -82,10 +98,11 @@ async fn create(
     let time = Local::now().format("%F %T").to_string();
 
     sqlx::query!(
-        "INSERT INTO post (author, time, content) VALUES (?1, ?2, ?3)",
+        "INSERT INTO post (author, time, content, parent) VALUES (?1, ?2, ?3, ?4)",
         author,
         time,
-        s
+        s,
+        create_post.parent
     )
     .execute(&mut *db)
     .await
@@ -137,13 +154,27 @@ async fn comment_amount(
     _user: UserGuard,
     pid: i64,
 ) -> Result<Value, Value> {
-    let dat = sqlx::query!("SELECT cid FROM comment WHERE pid = ?", pid)
-        .fetch_all(&mut *db)
-        .await
-        .conv()?
-        .len();
+    let mut q = VecDeque::new();
+    q.push_back(pid);
 
-    success!(dat)
+    let mut cnt = 0;
+
+    while !q.is_empty() {
+        let front = q.front().conv()?.to_owned();
+        q.pop_front();
+
+        let dat = sqlx::query!("SELECT pid FROM post WHERE parent = ?", front)
+            .fetch_all(&mut *db)
+            .await
+            .conv()?;
+
+        let mut res: VecDeque<_> = dat.iter().map(|x| x.pid).collect();
+        cnt += res.len();
+
+        q.append(&mut res);
+    }
+
+    success!(cnt)
 }
 
 pub fn routes() -> Vec<rocket::Route> {

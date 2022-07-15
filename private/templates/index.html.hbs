@@ -3,104 +3,23 @@
 
 <head>
     <title>首页 - polygen</title>
-    <script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/pace/1.2.4/themes/blue/pace-theme-minimal.min.css">
-    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.staticfile.org/jquery/1.12.4/jquery.min.js"></script>
-    <link href="/css/index.min.css" rel="stylesheet">
+
+    {{> prelude }}
+
+    {{> renderer }}
+
+    {{> editor }}
+
     <link href="/css/post.min.css" rel="stylesheet">
-    <link href="/css/sidebar.min.css" rel="stylesheet">
-    <script src="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.min.js?ver=20190219"></script>
-    <link href="https://cdn.luogu.com.cn/markdown-palettes/markdown-palettes.css?ver=20190219" rel="stylesheet">
-    <script src="/js/index.min.js"></script>
-    <script src="https://cdn.staticfile.org/marked/4.0.17/marked.min.js"></script>
-    <script src="/js/algorithm.min.js"></script>
-    <script src="https://cdn.staticfile.org/handlebars.js/4.7.7/handlebars.min.js"></script>
-    <script src="https://cdn.staticfile.org/sweetalert/2.1.2/sweetalert.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.15.4/css/fontawesome.min.css">
-    <script src="https://cdn.staticfile.org/dompurify/2.3.8/purify.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/KaTeX/0.16.0/katex.min.css">
-    <script defer src="https://cdn.staticfile.org/KaTeX/0.16.0/katex.min.js"></script>
-    <script defer src="https://cdn.staticfile.org/KaTeX/0.16.0/contrib/auto-render.min.js"></script>
-    <script src="https://cdn.staticfile.org/highlight.js/11.5.1/highlight.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.staticfile.org/highlight.js/11.5.1/styles/atom-one-light.min.css">
+
     <script src="/js/sidebar.min.js"></script>
-    <script src="https://cdn.staticfile.org/randomcolor/0.6.1/randomColor.min.js"></script>
+    <link href="/css/sidebar.min.css" rel="stylesheet">
+
+    <script src="/js/index.min.js"></script>
 </head>
 
 <body>
-    <script>
-        if (!userExists("{{username}}")) {
-            $.post('/logout', {}, _ => window.location.href = '/login');
-        }
-    </script>
-    <nav class="navbar navbar-expand-sm navbar-light p-3 mb-3 border-bottom fixed-top align-items-center">
-        <div class="container-fluid d-flex flex-wrap">
-            <ul class="navbar-nav">
-                <a class="navbar-brand" href="/">
-                    <img src="/img/polygen.png" alt="logo" width="120">
-                </a>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/game">
-                        <i class="far fa-crown fa-fw"></i>
-                        游戏
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/leaderboard">
-                        <i class="far fa-signal fa-fw"></i>
-                        排行榜
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/webadmin">
-                        <i class="far fa-tachometer-alt fa-fw"></i>
-                        管理后台
-                    </a>
-                </li>
-            </ul>
-
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <div class="dropdown dropstart text-end flex-end">
-                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ username }}
-                        </a>
-
-                        <ul class="dropdown-menu mx-0 shadow" aria-labelledby="dropdownUser">
-                            <li>
-                                <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ username }}">
-                                    <i class="far fa-user fa-fw"></i>
-                                    主页
-                                </a>
-                            </li>
-
-                            <li>
-                                <a class="dropdown-item d-flex gap-2 align-items-center" href="/settings">
-                                    <i class="far fa-cog fa-fw"></i>
-                                    设置
-                                </a>
-                            </li>
-
-                            <hr class="dropdown-divider">
-
-                            <li>
-                                <a class="dropdown-item text-danger d-flex gap-2 align-items-center no-href"
-                                    onclick="$.post('/logout', {}, _ => window.location.href='/login');">
-                                    <i class="far fa-sign-out-alt fa-fw"></i>
-                                    登出
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
+    {{> nav }}
 
     <div id="main" class="polygen-main">
         <div id="sLeft" class="sidebar">

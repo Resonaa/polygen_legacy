@@ -6,7 +6,7 @@ use rocket::{
     serde::json::{json, Json, Value},
 };
 use rocket_db_pools::{sqlx, Connection};
-use rocket_dyn_templates::Template;
+use rocket_dyn_templates::{context, Template};
 
 #[get("/register")]
 fn register(_user: UserGuard) -> Redirect {
@@ -15,7 +15,7 @@ fn register(_user: UserGuard) -> Redirect {
 
 #[get("/register", rank = 2)]
 fn register_page() -> Template {
-    Template::render("register.min", ())
+    Template::render("session.min", context! { session: true })
 }
 
 #[post("/register", data = "<register>")]

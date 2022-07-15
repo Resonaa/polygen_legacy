@@ -18,7 +18,7 @@ $(() => {
         }, () => window.location.href = '/');
     });
 
-    $("#login").keydown(e => {
+    $(".auth-form").keydown(e => {
         let keyCode = e.which || e.keyCode;
         if (keyCode == 13) {
             $("#submit").click();

@@ -25,7 +25,7 @@ $(() => {
         ajax("post", "/register", { "username": $("#username")[0].value, "password": $("#password")[0].value, "captcha": $("#captcha")[0].value }
             , msg => show(msg), () => window.location.href = '/');
     });
-    $("#register").keydown(e => {
+    $(".auth-form").keydown(e => {
         let keyCode = e.which || e.keyCode;
         if (keyCode == 13) {
             $("#submit").click();

@@ -4,3 +4,4 @@ test/
 public/js/*.js
 public/css/*.css
 templates/*.hbs
+templates/partials/*.hbs

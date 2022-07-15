@@ -1,0 +1,85 @@
+<nav class="navbar navbar-expand-sm navbar-light p-3 mb-3 border-bottom fixed-top align-items-center">
+    <div class="container-fluid d-flex flex-wrap">
+        <ul class="navbar-nav">
+            <a class="navbar-brand" href="/">
+                <img src="/img/polygen.png" alt="logo" width="120">
+            </a>
+
+            {{#if session}}
+            <li class="nav-item">
+                <a class="nav-link {{#if login}} disabled {{else}} text-dark {{/if}}" href="/login">
+                    <i class="far fa-sign-in-alt fa-fw"></i>
+                    登录
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{#unless login}} disabled {{else}} text-dark {{/unless}}" href="/register">
+                    <i class="far fa-user-plus fa-fw"></i>
+                    注册
+                </a>
+            </li>
+            {{else}}
+            <li class="nav-item">
+                <a class="nav-link {{#if game}} disabled {{else}} text-dark {{/if}}" href="/game">
+                    <i class="far fa-crown fa-fw"></i>
+                    游戏
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{#if leaderboard}} disabled {{else}} text-dark {{/if}}" href="/leaderboard">
+                    <i class="far fa-signal fa-fw"></i>
+                    排行榜
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{#if webadmin}} disabled {{else}} text-dark {{/if}}" href="/webadmin">
+                    <i class="far fa-tachometer-alt fa-fw"></i>
+                    管理后台
+                </a>
+            </li>
+            {{/if}}
+        </ul>
+
+        {{#if username}}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <div class="dropdown dropstart text-end flex-end">
+                    <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ username }}
+                    </a>
+
+                    <ul class="dropdown-menu mx-0 shadow" aria-labelledby="dropdownUser">
+                        <li>
+                            <a class="dropdown-item d-flex gap-2 align-items-center" href="/user/{{ username }}">
+                                <i class="far fa-user fa-fw"></i>
+                                主页
+                            </a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item d-flex gap-2 align-items-center" href="/settings">
+                                <i class="far fa-cog fa-fw"></i>
+                                设置
+                            </a>
+                        </li>
+
+                        <hr class="dropdown-divider">
+
+                        <li>
+                            <a class="dropdown-item text-danger d-flex gap-2 align-items-center no-href"
+                                onclick="$.post('/logout', {}, _ => window.location.href='/login');">
+                                <i class="far fa-sign-out-alt fa-fw"></i>
+                                登出
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+        {{/if}}
+    </div>
+</nav>

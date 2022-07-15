@@ -4,7 +4,7 @@ use rocket_dyn_templates::{context, Template};
 #[get("/post/<_>")]
 fn get_post(user: UserGuard) -> Template {
     Template::render(
-        "post.min",
+        "index.min",
         context! {
             username: user.username,
         },

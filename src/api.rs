@@ -1,6 +1,5 @@
 mod announcement;
 mod captcha;
-mod comment;
 mod post;
 mod user;
 
@@ -11,7 +10,6 @@ pub fn routes() -> Vec<rocket::Route> {
         announcement::routes(),
         post::routes(),
         user::routes(),
-        captcha::routes(),
-        comment::routes()
+        captcha::routes()
     ]
 }

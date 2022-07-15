@@ -31,18 +31,25 @@ fn main() -> Result<(), Box<dyn Error>> {
         fs::write(path, out)?;
     }
 
-    for entry in fs::read_dir("private/templates/")? {
-        let dir = entry?;
-        let file_name = dir.file_name().into_string().unwrap();
+    for suffix in ["", "partials/"] {
+        for entry in fs::read_dir(format!("private/templates/{suffix}"))? {
+            let dir = entry?;
+            let file_name = dir.file_name().into_string().unwrap();
+            println!("{}", file_name);
 
-        let mut path = "templates/".to_string();
-        path.push_str(&file_name.replace(".html.hbs", ".min.html.hbs"));
+            if !file_name.ends_with("hbs") {
+                continue;
+            }
 
-        let source = fs::read_to_string(dir.path())?;
-        let cfg = Cfg::default();
-        let out = minify_html(&source.into_bytes(), &cfg);
+            let mut path = format!("templates/{suffix}");
+            path.push_str(&file_name.replace(".html.hbs", ".min.html.hbs"));
 
-        fs::write(path, out)?;
+            let source = fs::read_to_string(dir.path())?;
+            let cfg = Cfg::default();
+            let out = minify_html(&source.into_bytes(), &cfg);
+
+            fs::write(path, out)?;
+        }
     }
 
     Ok(())
