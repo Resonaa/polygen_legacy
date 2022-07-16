@@ -1,5 +1,4 @@
 use futures_util::{SinkExt, StreamExt};
-use parking_lot::Mutex;
 use rocket::{
     serde::{
         json::{self, serde_json, Value},
@@ -8,7 +7,10 @@ use rocket::{
     tokio::{
         self,
         net::{TcpListener, TcpStream},
-        sync::broadcast::{self, Receiver, Sender},
+        sync::{
+            broadcast::{self, Receiver, Sender},
+            Mutex,
+        },
     },
 };
 use std::{error::Error, sync::Arc};
@@ -72,7 +74,7 @@ impl Socket {
         let id = Arc::new(Mutex::new(0));
         tokio::spawn(async move {
             while let Ok((stream, _)) = listener.accept().await {
-                let mut id = id.lock();
+                let mut id = id.lock().await;
                 *id += 1;
                 tokio::spawn(handle_connection(
                     stream,

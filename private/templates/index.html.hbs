@@ -21,35 +21,49 @@
 <body>
     {{> nav }}
 
-    <div id="main" class="polygen-main">
-        <div id="sLeft" class="sidebar">
-            <div class="polygen-item">
-                <h5 class="module">公告</h5>
-                <div id="announcement">
-                    <div class="spinner-border"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="sLeft" class="col">
+                <div class="polygen-item">
+                    <h5 class="module">公告</h5>
+                    <div id="announcement">
+                        <div class="spinner-border"></div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="main-part">
-            <div class="polygen-item">
-                <div id="editor-container" style="height: 170px">
-                    <div id="post-editor"></div>
+            <div id="main-part" class="col-sm-7">
+                <div class="polygen-item">
+                    <div id="editor-container" style="height: 170px">
+                        <div id="post-editor"></div>
+                    </div>
+
+                    <button id="post" class="btn btn-primary mt-2">发布说说</button>
                 </div>
 
-                <button id="post" class="btn btn-primary mt-2">发布说说</button>
+                <div class="polygen-item" hidden>
+                    <ul class="nav nav-pills justify-content-center">
+                        <li class="nav-item post-selector" id="tree">
+                            <a class="nav-link no-href active">树形布局</a>
+                        </li>
+
+                        <li class="nav-item post-selector" id="vertical">
+                            <a class="nav-link no-href">垂直布局</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="load-more" class="polygen-item">
+                    <a class="loader no-href"></a>
+                </div>
             </div>
 
-            <div id="load-more" class="polygen-item">
-                <a class="loader no-href"></a>
-            </div>
-        </div>
-
-        <div id="sRight" class="sidebar">
-            <div class="polygen-item">
-                <h5 class="module">最新回放</h5>
-                <div id="replay">
-                    暂无数据
+            <div id="sRight" class="col-sm">
+                <div class="polygen-item">
+                    <h5 class="module">最新回放</h5>
+                    <div id="replay">
+                        暂无数据
+                    </div>
                 </div>
             </div>
         </div>

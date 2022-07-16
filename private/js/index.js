@@ -17,7 +17,7 @@ $(() => {
 
     let page = 1;
     let postTemplate = Handlebars.compile(`
-        <article class="post">
+        <article class="polygen-item" style="padding: unset;">
             <header class="post-hd">
                 <div class="post-meta">
                     <div class="post-author"></div>
@@ -25,7 +25,7 @@ $(() => {
                 </div>
             </header>
 
-            <a href="/post/{{pid}}" style="color: unset;"><div class="post-content needs-render"></div></a>
+            <a href="/post/{{pid}}" style="color: unset;"><div class="post-content"></div></a>
         </article>`);
 
     if (pid != 0) {
@@ -37,6 +37,10 @@ $(() => {
     }
 
     function addPost() {
+        if ($("#load-more").html() == "没有更多了") {
+            return;
+        }
+
         $(".loader").html(`<div class="spinner-border"></div>`);
 
         ajax("get", `/api/post?`, { parent: pid, page: page }, undefined, dat => {
@@ -47,7 +51,7 @@ $(() => {
             }
 
             if (dat.length < 10) {
-                $("#load-more").html("没有更多了").click(() => { });
+                $("#load-more").html("没有更多了");
             } else {
                 $(".loader").html("点击查看更多...");
             }

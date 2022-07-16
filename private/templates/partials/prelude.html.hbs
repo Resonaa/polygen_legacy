@@ -1,5 +1,18 @@
-<script src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
-<link rel="stylesheet" href="https://cdn.staticfile.org/pace/1.2.4/themes/blue/pace-theme-minimal.min.css">
+<script media="screen and (min-width: 576px)">
+    paceOptions = {
+        maxProgressPerFrame: 40,
+        ajax: {
+            trackMethods: ["GET", "POST", "PUT", "DELETE"],
+            trackWebSockets: true,
+            ignoreURLs: []
+        }
+    };
+</script>
+<script media="screen and (min-width: 576px)" src="https://cdn.staticfile.org/pace/1.2.4/pace.min.js"></script>
+<link media="screen and (min-width: 576px)" rel="stylesheet"
+    href="https://cdn.staticfile.org/pace/1.2.4/themes/blue/pace-theme-minimal.min.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
 <link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/5.15.4/css/fontawesome.min.css">
 
