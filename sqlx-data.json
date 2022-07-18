@@ -50,6 +50,48 @@
     },
     "query": "INSERT INTO post (author, time, content, parent) VALUES (?1, ?2, ?3, ?4)"
   },
+  "488a8fda5482e77aea08687b4f91239db0f28cb5497817812a5c8fec1277425a": {
+    "describe": {
+      "columns": [
+        {
+          "name": "pid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "author",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "time",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 3,
+          "type_info": "Text"
+        },
+        {
+          "name": "parent",
+          "ordinal": 4,
+          "type_info": "Int64"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM post WHERE parent = ?"
+  },
   "5ad4fb2c35b6bd4854c7aed9ae1506e588d6fb9abcbd9da2f24491b01844507b": {
     "describe": {
       "columns": [],

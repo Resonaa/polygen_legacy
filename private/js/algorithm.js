@@ -39,7 +39,7 @@ function userExists(username) {
 function textRenderer(s) {
     let a = document.createElement("div");
 
-    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""), { KEEP_CONTENT: false });
+    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""), { FORBID_TAGS: ["nav"] });
 
     renderMathInElement(a, {
         delimiters: [
@@ -64,7 +64,7 @@ function textRenderer(s) {
 
 function userLink(username) {
     if (!userExists(username)) {
-        return username
+        return username;
     }
 
     return `<a href="/user/${username}" class="at" style="color: ${randomColor({ seed: username })}">${username}</a>`;
@@ -95,15 +95,15 @@ function deltaTime(s) {
                     if (minutes == 0) {
                         leaveTime = leaveTime % (60 * 1000);
                         let seconds = Math.round(leaveTime / 1000);
-                        return seconds + "秒前"
+                        return seconds + "秒前";
                     }
-                    return minutes + "分钟前"
+                    return minutes + "分钟前";
                 }
-                return hours + "小时前"
+                return hours + "小时前";
             }
-            return days + "天前"
+            return days + "天前";
         }
-        return months + "月前"
+        return months + "月前";
     }
-    return years + "年前"
+    return years + "年前";
 }

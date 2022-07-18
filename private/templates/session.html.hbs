@@ -19,7 +19,7 @@
                 <img src="/img/polygen.png">
 
                 <div class="auth-gruop">
-                    <div class="mb-2 mt-2">
+                    <div class="mb-2 mt-3">
                         <label for="username" class="form-label">用户名</label>
                         <div class="auth-group">
                             <input id="username" type="username" class="form-control" placeholder="用户名" name="username">
@@ -34,14 +34,14 @@
                     </div>
 
                     {{#unless login}}
-                    <div class="mb-3">
+                    <div class="mb-2">
                         <div class="auth-group">
                             <input id="password2" type="password" class="form-control" placeholder="再次输入密码">
                         </div>
                     </div>
                     {{/unless}}
 
-                    <div class="mb-2">
+                    <div class="mb-3">
                         <label for="captcha" class="form-label">验证码</label>
                         <div class="auth-group">
                             <input id="captcha" type="text" class="form-control" placeholder="验证码">
@@ -57,7 +57,7 @@
                     <hr>
                 </div>
 
-                <div>
+                <div style="font-size: 0.875em;">
                     {{#if login}}
                     <span>没有账号？</span>
                     <a href="/register">注册</a>

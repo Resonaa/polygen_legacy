@@ -12,50 +12,96 @@ use std::collections::VecDeque;
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct Post<'r> {
+struct Post {
     pid: i64,
-    author: &'r str,
-    time: &'r str,
+    author: String,
+    time: String,
     content: String,
     parent: i64,
 }
 
-impl<'r> Post<'r> {
-    pub fn new(pid: i64, author: &'r str, time: &'r str, content: String, parent: i64) -> Self {
+impl Post {
+    pub fn new(
+        pid: i64,
+        author: impl ToString,
+        time: impl ToString,
+        content: impl ToString,
+        parent: i64,
+    ) -> Self {
         Self {
             pid,
-            author,
-            time,
-            content,
+            author: author.to_string(),
+            time: time.to_string(),
+            content: content.to_string(),
             parent,
         }
     }
 }
 
-#[get("/post?<parent>&<page>")]
+#[get("/post?<parent>&<page>&<view>")]
 async fn list(
     mut db: Connection<Db>,
     _user: UserGuard,
     parent: i64,
-    page: i64,
+    page: usize,
+    view: String,
 ) -> Result<Value, Value> {
-    let page = (page - 1) * 10;
+    if !(1..usize::max_value() / 10).contains(&page) {
+        return error!("数据范围错误");
+    }
 
-    let dat = sqlx::query!(
-        "SELECT * FROM post WHERE parent = ?1 ORDER BY pid DESC LIMIT 10 OFFSET ?2",
-        parent,
-        page
-    )
-    .fetch_all(&mut *db)
-    .await
-    .conv()?;
+    match view.as_str() {
+        "tree" => {
+            let page: i64 = ((page - 1) * 10).try_into().conv()?;
 
-    let res: Vec<_> = dat
-        .iter()
-        .map(|x| Post::new(x.pid, &x.author, &x.time, x.content.to_string(), x.parent))
-        .collect();
+            let res: Vec<_> = sqlx::query!(
+                "SELECT * FROM post WHERE parent = ?1 ORDER BY pid DESC LIMIT 10 OFFSET ?2",
+                parent,
+                page
+            )
+            .fetch_all(&mut *db)
+            .await
+            .conv()?
+            .iter()
+            .map(|x| Post::new(x.pid, &x.author, &x.time, &x.content, x.parent))
+            .collect();
 
-    success!(res)
+            success!(res)
+        }
+        "line" => {
+            let mut ans: Vec<_> = sqlx::query!("SELECT * FROM post WHERE parent = ?", parent)
+                .fetch_all(&mut *db)
+                .await
+                .conv()?
+                .iter()
+                .map(|x| Post::new(x.pid, &x.author, &x.time, &x.content, x.parent))
+                .collect();
+
+            let mut q: VecDeque<_> = ans.iter().map(|x| x.pid).collect();
+
+            while !q.is_empty() {
+                let front = q.front().conv()?.to_owned();
+                q.pop_front();
+
+                let mut res: Vec<_> = sqlx::query!("SELECT * FROM post WHERE parent = ?", front)
+                    .fetch_all(&mut *db)
+                    .await
+                    .conv()?
+                    .iter()
+                    .map(|x| Post::new(x.pid, &x.author, &x.time, &x.content, x.parent))
+                    .collect();
+
+                q.append(&mut res.iter().map(|x| x.pid).collect());
+
+                ans.append(&mut res);
+            }
+
+            ans.sort_unstable_by_key(|x| -x.pid);
+
+            success!(&ans[ans.len().min((page - 1) * 10)..ans.len().min(page * 10)])
+        }
+        _ => error!("视图类型错误"),
+    }
 }
 
 #[get("/post?<pid>", rank = 2)]
@@ -69,7 +115,7 @@ async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Result<Value
         dat.pid,
         &dat.author,
         &dat.time,
-        dat.content.to_string(),
+        &dat.content,
         dat.parent
     ))
 }
@@ -87,9 +133,9 @@ async fn create(
     jar: &CookieJar<'_>,
     create_post: Json<CreatePost>,
 ) -> Result<Value, Value> {
-    let s = &create_post.content;
+    let content = create_post.content.trim();
 
-    if !(1..=100000).contains(&s.chars().count()) {
+    if !(1..=100000).contains(&content.chars().count()) {
         return error!("说说长度应为 1~100000 个字符");
     }
 
@@ -101,7 +147,7 @@ async fn create(
         "INSERT INTO post (author, time, content, parent) VALUES (?1, ?2, ?3, ?4)",
         author,
         time,
-        s,
+        content,
         create_post.parent
     )
     .execute(&mut *db)
@@ -124,9 +170,11 @@ async fn update(
     _user: UserGuard,
     update_post: Json<UpdatePost>,
 ) -> Result<Value, Value> {
+    let content = update_post.content.trim();
+
     sqlx::query!(
         "UPDATE post SET content = ?1 WHERE pid = ?2",
-        update_post.content,
+        content,
         update_post.pid
     )
     .execute(&mut *db)

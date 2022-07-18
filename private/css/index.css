@@ -26,14 +26,6 @@ a {
     text-decoration: none;
 }
 
-#main-part {
-    padding: 0 0px;
-}
-
-a {
-    color: #3498db;
-}
-
 .at {
     font-weight: bold;
 }
@@ -45,10 +37,6 @@ a {
 .mp-editor-toolbar {
     user-select: none;
     -webkit-user-select: none;
-}
-
-.btn-primary {
-    background-color: #0e90d2;
 }
 
 button {
@@ -73,4 +61,8 @@ td {
 .far {
     font-family: 'Font Awesome 5 Pro';
     font-weight: 400;
+}
+
+.form-label {
+    margin-bottom: .3rem;
 }
