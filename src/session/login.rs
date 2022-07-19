@@ -22,20 +22,13 @@ fn login_page() -> Template {
 async fn post_login(
     mut db: Connection<Db>,
     jar: &CookieJar<'_>,
-    login: Json<Login<'_>>,
+    login: Json<Login>,
 ) -> Result<Value, Value> {
-    if login.captcha.to_lowercase()
-        != jar
-            .get_private("captcha")
-            .conv()?
-            .value()
-            .to_string()
-            .to_lowercase()
-    {
+    if login.captcha.to_lowercase() != jar.get_private("captcha").conv()?.value().to_lowercase() {
         return error!("验证码错误");
     }
 
-    let password = sha256::digest(login.password);
+    let password = sha256::digest(&login.password);
 
     sqlx::query!(
         "SELECT uid FROM user WHERE username = ?1 AND password = ?2",
@@ -46,7 +39,7 @@ async fn post_login(
     .await
     .my_conv("用户名或密码错误")?;
 
-    jar.add_private(Cookie::new("username", login.username.to_string()));
+    jar.add_private(Cookie::new("username", login.username.clone()));
 
     success!("登录成功")
 }
@@ -58,5 +51,5 @@ fn logout(jar: &CookieJar<'_>) -> Redirect {
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    routes![login, login_page, post_login, logout,]
+    routes![login, login_page, post_login, logout]
 }

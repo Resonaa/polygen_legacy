@@ -1,4 +1,3 @@
-use crate::concat_vec;
 use rocket::{
     outcome::IntoOutcome,
     request::{self, FromRequest, Request},
@@ -12,10 +11,10 @@ mod register;
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-pub struct Login<'r> {
-    username: &'r str,
-    password: &'r str,
-    captcha: &'r str,
+pub struct Login {
+    username: String,
+    password: String,
+    captcha: String,
 }
 
 #[derive(Debug)]
@@ -54,9 +53,10 @@ fn no_auth_index() -> Redirect {
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    concat_vec![
+    [
         routes![index, no_auth_index],
         login::routes(),
-        register::routes()
+        register::routes(),
     ]
+    .concat()
 }

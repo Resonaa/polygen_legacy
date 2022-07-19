@@ -24,7 +24,34 @@ nav {
 
 a {
     text-decoration: none;
+    position: relative;
 }
+
+a::after {
+    content: "";
+    height: 2px;
+    overflow: hidden;
+    display: block;
+    left: 0;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: all 0.3s;
+}
+
+a:hover::after {
+    transform: scaleX(1);
+}
+
+/* a:not(.nav-link):not(.dropdown-item):hover {
+    text-decoration: underline;
+}
+
+a:not(.nav-link):not(.dropdown-item):active {
+    text-decoration: underline;
+} */
 
 .at {
     font-weight: bold;

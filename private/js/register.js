@@ -1,6 +1,6 @@
 $(() => {
     function changeCaptcha() {
-        $("#captcha")[0].value = "";
+        $("#captcha").val("");
         $(".captcha")[0].src = "/api/captcha?t=" + Math.random();
     }
 
@@ -17,14 +17,17 @@ $(() => {
             changeCaptcha();
         }
 
-        if ($("#password")[0].value != $("#password2")[0].value) {
+        let username = $("#username").val(), password = $("#password").val(), password2 = $("#password2").val(), captcha = $("#captcha").val();
+
+        if (password != password2) {
             show("两次输入的密码不一致");
             return;
         }
 
-        ajax("post", "/register", { "username": $("#username")[0].value, "password": $("#password")[0].value, "captcha": $("#captcha")[0].value }
-            , msg => show(msg), () => window.location.href = '/');
+        ajax("post", "/register", { username: username, password: password, captcha: captcha }
+            , msg => show(msg), () => window.location.href = "/");
     });
+
     $(".auth-form").keydown(e => {
         let keyCode = e.which || e.keyCode;
         if (keyCode == 13) {

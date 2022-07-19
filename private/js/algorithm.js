@@ -39,23 +39,21 @@ function userExists(username) {
 function textRenderer(s) {
     let a = document.createElement("div");
 
-    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""), { FORBID_TAGS: ["nav"] });
+    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""), {
+        FORBID_TAGS: ["nav", "article", "header"],
+        KEEP_CONTENT: false,
+        FORBID_ATTR: ["style"]
+    });
 
     renderMathInElement(a, {
         delimiters: [
-            { left: '$$', right: '$$', display: true },
-            { left: '$', right: '$', display: false },
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false },
         ],
         throwOnError: false
     });
 
-    a.querySelectorAll('pre code').forEach(el => {
-        if (el.classList.contains("hljs")) {
-            return;
-        }
-
-        hljs.highlightElement(el);
-    });
+    a.querySelectorAll("pre code").forEach(hljs.highlightElement);
 
     addAt(a);
 
@@ -73,9 +71,7 @@ function userLink(username) {
 function addAt(e) {
     e.innerHTML = e.innerHTML.replace(/@([\u4e00-\u9fa5_a-zA-Z0-9]{3,16})/g, `@<a class="unfinished-at">$1</a>`);
 
-    e.querySelectorAll('.unfinished-at').forEach((el) => {
-        el.outerHTML = userLink(el.innerHTML);
-    });
+    e.querySelectorAll(".unfinished-at").forEach(el => el.outerHTML = userLink(el.innerHTML));
 }
 
 function deltaTime(s) {

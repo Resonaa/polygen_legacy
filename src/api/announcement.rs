@@ -7,63 +7,44 @@ use rocket_db_pools::Connection;
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct Announcement<'r> {
+struct Announcement {
     aid: i64,
-    title: &'r str,
+    title: String,
     content: String,
-}
-
-impl<'r> Announcement<'r> {
-    pub fn new(aid: i64, title: &'r str, content: String) -> Self {
-        Self {
-            aid,
-            title,
-            content,
-        }
-    }
 }
 
 #[get("/announcement")]
 async fn list(mut db: Connection<Db>, _user: UserGuard) -> Result<Value, Value> {
-    let dat = sqlx::query!("SELECT * FROM announcement")
+    success!(sqlx::query_as!(Announcement, "SELECT * FROM announcement")
         .fetch_all(&mut *db)
         .await
-        .conv()?;
-
-    let res: Vec<_> = dat
-        .iter()
-        .map(|x| Announcement::new(x.aid, &x.title, x.content.to_string()))
-        .collect();
-
-    success!(res)
+        .conv()?)
 }
 
 #[get("/announcement?<aid>", rank = 2)]
 async fn get(mut db: Connection<Db>, _user: UserGuard, aid: i32) -> Result<Value, Value> {
-    let dat = sqlx::query!("SELECT * FROM announcement WHERE aid = ?", aid)
-        .fetch_one(&mut *db)
-        .await
-        .conv()?;
-
-    success!(Announcement::new(
-        dat.aid,
-        &dat.title,
-        dat.content.to_string()
-    ))
+    success!(sqlx::query_as!(
+        Announcement,
+        "SELECT * FROM announcement WHERE aid = ?",
+        aid
+    )
+    .fetch_one(&mut *db)
+    .await
+    .conv()?)
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct CreateAnnouncement<'r> {
-    title: &'r str,
-    content: &'r str,
+struct CreateAnnouncement {
+    title: String,
+    content: String,
 }
 
 #[post("/announcement", data = "<create_announcement>")]
 async fn create(
     mut db: Connection<Db>,
     _user: UserGuard,
-    create_announcement: Json<CreateAnnouncement<'_>>,
+    create_announcement: Json<CreateAnnouncement>,
 ) -> Result<Value, Value> {
     sqlx::query!(
         "INSERT INTO announcement (title, content) VALUES (?1, ?2)",
@@ -81,7 +62,7 @@ async fn create(
 async fn update(
     mut db: Connection<Db>,
     _user: UserGuard,
-    update_announcement: Json<Announcement<'_>>,
+    update_announcement: Json<Announcement>,
 ) -> Result<Value, Value> {
     sqlx::query!(
         "UPDATE announcement SET title = ?1, content = ?2 WHERE aid = ?3",

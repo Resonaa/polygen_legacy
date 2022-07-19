@@ -1,9 +1,8 @@
+pub use land::*;
 use rocket::serde::{Deserialize, Serialize};
 use std::ops::{Index, IndexMut};
 
 mod land;
-
-pub use land::*;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 #[serde(crate = "rocket::serde")]

@@ -22,20 +22,14 @@ fn register_page() -> Template {
 async fn post_register(
     mut db: Connection<Db>,
     jar: &CookieJar<'_>,
-    register: Json<Login<'_>>,
+    register: Json<Login>,
 ) -> Result<Value, Value> {
-    if register.captcha.to_lowercase()
-        != jar
-            .get_private("captcha")
-            .conv()?
-            .value()
-            .to_string()
-            .to_lowercase()
+    if register.captcha.to_lowercase() != jar.get_private("captcha").conv()?.value().to_lowercase()
     {
         return error!("验证码错误");
     }
 
-    if !is_valid_username(register.username) {
+    if !is_valid_username(&register.username) {
         return error!("用户名长度应为 3 ~ 16 位，包含中文、英文、数字和_");
     }
 
@@ -44,7 +38,7 @@ async fn post_register(
         return error!("密码长度应为 6 ~ 20 位");
     }
 
-    let password = sha256::digest(register.password);
+    let password = sha256::digest(&register.password);
     sqlx::query!(
         "INSERT INTO user (username, password) VALUES (?1, ?2)",
         register.username,
@@ -54,7 +48,7 @@ async fn post_register(
     .await
     .my_conv("用户名已存在")?;
 
-    jar.add_private(Cookie::new("username", register.username.to_string()));
+    jar.add_private(Cookie::new("username", register.username.clone()));
 
     success!("注册成功")
 }

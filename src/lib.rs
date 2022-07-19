@@ -18,34 +18,12 @@ use rocket::serde::json::{json, Value};
 pub trait DbError<T> {
     fn conv(self) -> Result<T, Value>
     where
-        Self: std::marker::Sized,
+        Self: Sized,
     {
         self.my_conv("数据库错误")
     }
 
     fn my_conv(self, value: &str) -> Result<T, Value>;
-}
-
-#[macro_export]
-macro_rules! concat_vec {
-    [$($x: expr),*] => {
-        {
-            let mut tmp = Vec::new();
-
-            $(
-                tmp.append(&mut $x);
-            )*
-
-            tmp
-        }
-    };
-}
-
-#[macro_export]
-macro_rules! message {
-    ($event: expr, $msg: expr) => {
-        json!({"event": $event, "msg": $msg})
-    };
 }
 
 impl<T, U> DbError<T> for Result<T, U> {

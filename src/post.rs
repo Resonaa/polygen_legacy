@@ -1,7 +1,7 @@
 use crate::session::UserGuard;
 use rocket_dyn_templates::{context, Template};
 
-#[get("/post/<_>")]
+#[get("/<_>")]
 fn get_post(user: UserGuard) -> Template {
     Template::render(
         "index.min",

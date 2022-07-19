@@ -1,6 +1,6 @@
 $(() => {
     function changeCaptcha() {
-        $("#captcha")[0].value = "";
+        $("#captcha").val("");
         $(".captcha")[0].src = "/api/captcha?t=" + Math.random();
     }
 
@@ -10,12 +10,12 @@ $(() => {
         $(".spinner-border").show();
         $("#submit").attr("disabled", 0);
 
-        ajax("post", "/login", { "username": $("#username")[0].value, "password": $("#password")[0].value, "captcha": $("#captcha")[0].value }, msg => {
+        ajax("post", "/login", { username: $("#username").val(), password: $("#password").val(), captcha: $("#captcha").val() }, msg => {
             swal("登录失败", msg, "error");
             $(".spinner-border").hide();
             $("#submit").removeAttr("disabled");
             changeCaptcha();
-        }, () => window.location.href = '/');
+        }, () => window.location.href = "/");
     });
 
     $(".auth-form").keydown(e => {

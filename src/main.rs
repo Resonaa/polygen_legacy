@@ -15,21 +15,23 @@ async fn rocket() -> _ {
 
     rocket::build()
         .attach(Template::custom(|engines| {
-            for name in ["nav", "prelude", "renderer", "editor"] {
+            for entry in fs::read_dir("templates/partials/").unwrap() {
+                let entry = entry.unwrap();
+
+                let file_name = entry.file_name().into_string().unwrap();
+
+                let name = file_name.trim_end_matches(".min.html.hbs");
+
                 engines
                     .handlebars
-                    .register_partial(
-                        name,
-                        fs::read_to_string(format!("templates/partials/{name}.min.html.hbs"))
-                            .unwrap(),
-                    )
+                    .register_partial(name, fs::read_to_string(entry.path()).unwrap())
                     .unwrap()
             }
         }))
         .attach(db::stage())
         .mount("/", FileServer::from("public/"))
         .mount("/", session::routes())
-        .mount("/", post::routes())
+        .mount("/post", post::routes())
         .mount("/api", api::routes())
         .register("/", error::catchers())
 }

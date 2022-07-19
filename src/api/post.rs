@@ -20,22 +20,10 @@ struct Post {
     parent: i64,
 }
 
-impl Post {
-    pub fn new(
-        pid: i64,
-        author: impl ToString,
-        time: impl ToString,
-        content: impl ToString,
-        parent: i64,
-    ) -> Self {
-        Self {
-            pid,
-            author: author.to_string(),
-            time: time.to_string(),
-            content: content.to_string(),
-            parent,
-        }
-    }
+#[derive(FromFormField)]
+enum ViewType {
+    Tree,
+    Line,
 }
 
 #[get("/post?<parent>&<page>&<view>")]
@@ -44,52 +32,41 @@ async fn list(
     _user: UserGuard,
     parent: i64,
     page: usize,
-    view: String,
+    view: ViewType,
 ) -> Result<Value, Value> {
     if !(1..usize::max_value() / 10).contains(&page) {
         return error!("数据范围错误");
     }
 
-    match view.as_str() {
-        "tree" => {
+    match view {
+        ViewType::Tree => {
             let page: i64 = ((page - 1) * 10).try_into().conv()?;
 
-            let res: Vec<_> = sqlx::query!(
+            success!(sqlx::query_as!(
+                Post,
                 "SELECT * FROM post WHERE parent = ?1 ORDER BY pid DESC LIMIT 10 OFFSET ?2",
                 parent,
                 page
             )
             .fetch_all(&mut *db)
             .await
-            .conv()?
-            .iter()
-            .map(|x| Post::new(x.pid, &x.author, &x.time, &x.content, x.parent))
-            .collect();
-
-            success!(res)
+            .conv()?)
         }
-        "line" => {
-            let mut ans: Vec<_> = sqlx::query!("SELECT * FROM post WHERE parent = ?", parent)
+        _ => {
+            let mut ans = sqlx::query_as!(Post, "SELECT * FROM post WHERE parent = ?", parent)
                 .fetch_all(&mut *db)
                 .await
-                .conv()?
-                .iter()
-                .map(|x| Post::new(x.pid, &x.author, &x.time, &x.content, x.parent))
-                .collect();
+                .conv()?;
 
             let mut q: VecDeque<_> = ans.iter().map(|x| x.pid).collect();
 
             while !q.is_empty() {
-                let front = q.front().conv()?.to_owned();
-                q.pop_front();
+                let front = q.pop_front().conv()?;
 
-                let mut res: Vec<_> = sqlx::query!("SELECT * FROM post WHERE parent = ?", front)
+                let mut res = sqlx::query_as!(Post, "SELECT * FROM post WHERE parent = ?", front)
                     .fetch_all(&mut *db)
                     .await
-                    .conv()?
-                    .iter()
-                    .map(|x| Post::new(x.pid, &x.author, &x.time, &x.content, x.parent))
-                    .collect();
+                    .conv()?;
 
                 q.append(&mut res.iter().map(|x| x.pid).collect());
 
@@ -100,27 +77,20 @@ async fn list(
 
             success!(&ans[ans.len().min((page - 1) * 10)..ans.len().min(page * 10)])
         }
-        _ => error!("视图类型错误"),
     }
 }
 
 #[get("/post?<pid>", rank = 2)]
 async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Result<Value, Value> {
-    let dat = sqlx::query!("SELECT * FROM post WHERE pid = ?", pid)
-        .fetch_one(&mut *db)
-        .await
-        .conv()?;
-
-    success!(Post::new(
-        dat.pid,
-        &dat.author,
-        &dat.time,
-        &dat.content,
-        dat.parent
-    ))
+    success!(
+        sqlx::query_as!(Post, "SELECT * FROM post WHERE pid = ?", pid)
+            .fetch_one(&mut *db)
+            .await
+            .conv()?
+    )
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
 struct CreatePost {
     content: String,
@@ -157,7 +127,7 @@ async fn create(
     success!("发布成功")
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
 struct UpdatePost {
     pid: i64,
@@ -211,12 +181,14 @@ async fn comment_amount(
         let front = q.front().conv()?.to_owned();
         q.pop_front();
 
-        let dat = sqlx::query!("SELECT pid FROM post WHERE parent = ?", front)
+        let mut res: VecDeque<_> = sqlx::query!("SELECT pid FROM post WHERE parent = ?", front)
             .fetch_all(&mut *db)
             .await
-            .conv()?;
+            .conv()?
+            .iter()
+            .map(|x| x.pid)
+            .collect();
 
-        let mut res: VecDeque<_> = dat.iter().map(|x| x.pid).collect();
         cnt += res.len();
 
         q.append(&mut res);

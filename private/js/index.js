@@ -8,25 +8,18 @@ $(() => {
     let postEditor = new MarkdownPalettes("#post-editor");
 
     $("#post").click(() => {
-        if (postEditor.content && postEditor.content.trim()) {
-            ajax("post", "/api/post", { content: postEditor.content, parent: pid }, msg => swal("发送失败", msg, "error"), () => window.location.reload())
-        } else {
+        let content = postEditor.content || "";
+
+        if (!$("<div/>").html(textRenderer(content)).text().trim()) {
             swal("发送失败", "内容不能为空", "error");
+            return;
         }
+
+        ajax("post", "/api/post", { content: content, parent: pid }, msg => swal("发送失败", msg, "error"), () => window.location.reload())
     });
 
     let page = 1;
-    let postTemplate = Handlebars.compile(`
-        <article class="polygen-item post">
-            <header class="post-hd">
-                <div class="post-meta">
-                    <div class="post-author"></div>
-                    <span class="post-time">&nbsp;<time title="{{realTime}}">{{deltaTime}}</time>&nbsp;{{commentAmount}}评论</span>
-                </div>
-            </header>
-
-            <a href="/post/{{pid}}" style="color: unset;"><div class="post-content"></div></a>
-        </article>`);
+    let postTemplate = juicer.compile($("#post-template").html());
 
     function getAuthor(post) {
         if (post.parent == 0) {
@@ -38,9 +31,13 @@ $(() => {
 
     if (pid != 0) {
         let dat = ajaxSync("get", `/api/post?pid=${pid}`, undefined).msg;
-        $("#main-part").prepend(postTemplate({ realTime: dat.time, deltaTime: deltaTime(dat.time), commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: dat.pid }).msg }));
-        $(".post-content").last().html(textRenderer(dat.content)).css("max-height", "none").css("overflow-y", "hidden")[0].parentElement.attributes.removeNamedItem("href");
-        $(".post-author").last().html(getAuthor(i));
+        $("#main-part").prepend(postTemplate.render({
+            realTime: dat.time,
+            deltaTime: deltaTime(dat.time),
+            commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: dat.pid }).msg,
+            author: getAuthor(dat),
+            content: textRenderer(dat.content),
+        }));
         document.title = `${dat.author}的说说 - polygen`;
     }
 
@@ -55,10 +52,19 @@ $(() => {
 
         ajax("get", `/api/post?`, { parent: pid, page: page, view: view }, undefined, dat => {
             for (let i of dat) {
-                $("#load-more").before(postTemplate({ realTime: i.time, deltaTime: deltaTime(i.time), pid: i.pid, commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: i.pid }).msg }));
-                $(".post-content").last().html(textRenderer(i.content));
-                $(".post-author").last().html(getAuthor(i));
-                $(".post").last().addClass("comment");
+                let s = postTemplate.render({
+                    realTime: i.time,
+                    deltaTime: deltaTime(i.time),
+                    pid: i.pid,
+                    commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: i.pid }).msg,
+                    content: textRenderer(i.content),
+                    author: getAuthor(i),
+                    comment: true,
+                });
+
+                console.log(s);
+
+                $("#load-more").before(s);
             }
 
             if (dat.length < 10) {
