@@ -3,10 +3,6 @@
 }
 
 .post-header {
-    display: flex;
-}
-
-.post-meta {
     padding: 10px 15px;
     line-height: 1.2;
     white-space: nowrap;
@@ -34,16 +30,15 @@ p {
     -webkit-user-select: none;
 }
 
-.post-selector {
-    user-select: none;
-}
-
 .post-toolbar {
     float: right;
     font-weight: bold;
 }
 
+.post-header a {
+    color: #999;
+}
+
 .post-toolbar a {
     margin-left: 0.5em;
-    color: #999;
 }

@@ -41,8 +41,6 @@ $(() => {
         document.title = `${dat.author}的说说 - polygen`;
     }
 
-    let view = "tree";
-
     function addPost() {
         if ($(".loader").is(":hidden")) {
             return;
@@ -50,9 +48,9 @@ $(() => {
 
         $(".loader").html(`<div class="spinner-border"></div>`);
 
-        ajax("get", `/api/post?`, { parent: pid, page: page, view: view }, undefined, dat => {
+        ajax("get", `/api/post?`, { parent: pid, page: page }, undefined, dat => {
             for (let i of dat) {
-                let s = postTemplate.render({
+                $("#load-more").before(postTemplate.render({
                     realTime: i.time,
                     deltaTime: deltaTime(i.time),
                     pid: i.pid,
@@ -60,11 +58,7 @@ $(() => {
                     content: textRenderer(i.content),
                     author: getAuthor(i),
                     comment: true,
-                });
-
-                console.log(s);
-
-                $("#load-more").before(s);
+                }));
             }
 
             if (dat.length < 10) {
@@ -79,17 +73,6 @@ $(() => {
 
     $("#load-more").click(() => {
         page++;
-        addPost();
-    });
-
-    $(".post-selector > .nav-link").click((e) => {
-        $(".post-selector > .active").removeClass("active");
-        e.target.classList.add("active");
-        view = e.target.id;
-        page = 1;
-        $(".comment").remove();
-        $(".loader").show();
-        $("#no-more").remove();
         addPost();
     });
 });

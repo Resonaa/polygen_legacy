@@ -7,19 +7,17 @@
     {{> prelude }}
 </head>
 
-<body>
+<body class="container">
     {{> nav}}
 
-    <div class="container">
-        <div class="polygen-item">
-            <h1>{{status}}</h1>
+    <div class="polygen-item">
+        <h1>{{status}}</h1>
 
-            <span>3 秒后将返回上一页</span>
-        </div>
-        <script>
-            setTimeout(() => window.history.back(), 3000);
-        </script>
+        <span>3 秒后将返回上一页</span>
     </div>
+    <script>
+        setTimeout(() => window.history.back(), 3000);
+    </script>
 </body>
 
 </html>

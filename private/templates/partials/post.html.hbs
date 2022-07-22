@@ -1,29 +1,25 @@
 <script id="post-template" type="text/template">
     <article class="polygen-item post {@if comment}comment{@/if}">
-        <header class="post-hd">
-            <div class="post-meta">
-                $${author}
+        <header class="post-header">
+            $${author}
 
-                <time title="${realTime}">${deltaTime}</time>
-                ${commentAmount}评论
+            <time title="${realTime}">${deltaTime}</time>
+            ${commentAmount}评论
 
-                <div class="post-toolbar">
-                    <a class="modify-post no-href">修改</a>
-                    <a class="delete-post no-href">删除</a>
-                </div>
+            <div class="post-toolbar">
+                <a class="modify-post no-href">修改</a>
+                <a class="delete-post no-href">删除</a>
             </div>
         </header>
 
         {@if comment}
         <a href="/post/${pid}" style="color: unset;">
-            <div class="post-content">
-                <object>$${content}</object>
-            </div>
+            <object class="post-content">$${content}</object>
         </a>
         {@else}
-        <div class="post-content" style="max-height: none; overflow-y: hidden;">
+        <object class="post-content" style="max-height: none; overflow-y: hidden;">
             $${content}
-        </div>
+        </object>
         {@/if}
     </article>
 </script>

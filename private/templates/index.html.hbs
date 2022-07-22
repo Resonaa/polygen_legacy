@@ -18,56 +18,42 @@
     <script src="/js/index.min.js"></script>
 </head>
 
-<body>
+<body class="container-fluid">
     {{> nav }}
 
-    <div class="container-fluid">
-        <div class="row">
-            <div id="sLeft" class="col">
-                <div class="polygen-item">
-                    <h5 class="module">公告</h5>
-                    <div id="announcement">
-                        <div class="spinner-border"></div>
+    <div class="row">
+        <div class="col">
+            <div class="polygen-item">
+                <h5 class="module">公告</h5>
+                <div id="announcement">
+                    <div class="spinner-border"></div>
 
-                        {{> announcement}}
-                    </div>
+                    {{> announcement}}
                 </div>
             </div>
+        </div>
 
-            <div id="main-part" class="col-sm-7">
-                <div class="polygen-item">
-                    <div id="editor-container" style="height: 170px">
-                        <div id="post-editor"></div>
-                    </div>
-
-                    <button id="post" class="btn btn-primary mt-2">发布说说</button>
+        <div id="main-part" class="col-sm-7">
+            <div class="polygen-item">
+                <div id="editor-container" style="height: 170px">
+                    <div id="post-editor"></div>
                 </div>
 
-                <div class="polygen-item">
-                    <ul class="nav nav-pills justify-content-center row" style="text-align: center;">
-                        <li class="nav-item post-selector col">
-                            <a class="nav-link no-href active" id="tree">树形排列</a>
-                        </li>
-
-                        <li class="nav-item post-selector col">
-                            <a class="nav-link no-href" id="line">线性排列</a>
-                        </li>
-                    </ul>
-                </div>
-
-                {{> post}}
-
-                <div id="load-more" class="polygen-item">
-                    <a class="loader no-href"></a>
-                </div>
+                <button id="post" class="btn btn-primary mt-2">发布说说</button>
             </div>
 
-            <div id="sRight" class="col-sm">
-                <div class="polygen-item">
-                    <h5 class="module">最新回放</h5>
-                    <div id="replay">
-                        暂无数据
-                    </div>
+            {{> post}}
+
+            <div id="load-more" class="polygen-item">
+                <a class="loader no-href"></a>
+            </div>
+        </div>
+
+        <div class="col-sm">
+            <div class="polygen-item">
+                <h5 class="module">最新回放</h5>
+                <div id="replay">
+                    暂无数据
                 </div>
             </div>
         </div>

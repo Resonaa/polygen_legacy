@@ -1,6 +1,7 @@
 .auth-box {
     display: flex;
     justify-content: center;
+    margin-top: 2em;
 }
 
 .auth-card {

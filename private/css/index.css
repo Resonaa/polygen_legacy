@@ -27,7 +27,7 @@ a {
     position: relative;
 }
 
-a::after {
+a.at::after {
     content: "";
     height: 2px;
     overflow: hidden;
@@ -41,19 +41,11 @@ a::after {
     transition: all 0.3s;
 }
 
-a:hover::after {
+a.at:hover::after {
     transform: scaleX(1);
 }
 
-/* a:not(.nav-link):not(.dropdown-item):hover {
-    text-decoration: underline;
-}
-
-a:not(.nav-link):not(.dropdown-item):active {
-    text-decoration: underline;
-} */
-
-.at {
+a.at {
     font-weight: bold;
 }
 
