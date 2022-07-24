@@ -1,25 +1,26 @@
 #![allow(unused)]
 
-use crate::socket::{Event, Socket};
-use rocket::tokio::{
-    self,
-    time::{sleep, Duration},
-};
-
+mod core;
 mod generator;
 mod map;
+mod socket;
 
-pub async fn game() {
-    let socket = Socket::new("0.0.0.0:7878", |event| {
-        info!("got {:?}", event);
-        Event::new(event.id, "echo", format!("hello, {}!", event.id)).ok()
-    })
-    .await;
+pub use self::core::game;
+use crate::session::{Login, UserGuard};
+use crate::{db::Db, error, success, DbError};
+use rocket::{
+    http::{Cookie, CookieJar},
+    response::Redirect,
+    serde::json::{json, Json, Value},
+};
+use rocket_db_pools::{sqlx, Connection};
+use rocket_dyn_templates::{context, Template};
 
-    tokio::spawn(async move {
-        loop {
-            socket.send(Event::new(0, "broadcast", "b").unwrap());
-            sleep(Duration::from_secs(1)).await;
-        }
-    });
+#[get("/")]
+fn game_page(user: UserGuard) -> Template {
+    Template::render("game.min", context! { username: user.username, game: true })
+}
+
+pub fn routes() -> Vec<rocket::Route> {
+    routes![game_page]
 }

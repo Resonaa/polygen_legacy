@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>游戏 - polygen</title>
+
+    {{> prelude }}
+
+    {{> renderer }}
+
+    <script src="/js/sidebar.min.js"></script>
+    <link href="/css/sidebar.min.css" rel="stylesheet">
+</head>
+
+<body class="container-fluid">
+    {{> nav }}
+
+    <div class="row">
+        {{> sleft }}
+
+        <div id="main-part" class="col-sm-7">
+            <div class="polygen-item">
+                <h5 class="module">进行中的游戏</h5>
+            </div>
+        </div>
+
+        {{> sright }}
+    </div>
+</body>
+
+</html>

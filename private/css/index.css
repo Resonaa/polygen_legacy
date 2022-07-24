@@ -85,3 +85,8 @@ td {
 .form-label {
     margin-bottom: .3rem;
 }
+
+.module {
+    text-align: center;
+    font-weight: 550;
+}

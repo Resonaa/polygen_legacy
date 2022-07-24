@@ -10,7 +10,6 @@ pub mod game;
 pub mod post;
 mod responds;
 pub mod session;
-mod socket;
 
 use regex::Regex;
 use rocket::serde::json::{json, Value};

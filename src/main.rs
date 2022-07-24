@@ -33,5 +33,6 @@ async fn rocket() -> _ {
         .mount("/", session::routes())
         .mount("/post", post::routes())
         .mount("/api", api::routes())
+        .mount("/game", game::routes())
         .register("/", error::catchers())
 }
