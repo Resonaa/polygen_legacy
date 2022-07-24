@@ -1,0 +1,31 @@
+<script id="room-template" type="text/template">
+    <article class="room">
+        {@if status != "error"}
+        <a href="/game/${rid}">
+        {@/if}
+            <header class="room-header header-${status}">
+                ${config.mode} - ${config.map}
+                
+                <span class="badge bg-${status}">
+                    {@if status == "ongoing"}
+                    游戏中
+                    {@else if status == "waiting"}
+                    准备中
+                    {@else}
+                    不可加入
+                    {@/if}
+                </span>
+
+                <div class="room-toolbar">
+                    <i class="far fa-info-circle room-info no-href" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Test"></i>
+                </div>
+            </header>
+        {@if status != "error"}
+        </a>
+        {@/if}
+
+        <div class="room-content">
+            $${players}
+        </div>
+    </article>
+</script>

@@ -8,6 +8,9 @@
 
     {{> renderer }}
 
+    <link href="/css/game.min.css" rel="stylesheet">
+    <script src="/js/game.min.js"></script>
+
     <script src="/js/sidebar.min.js"></script>
     <link href="/css/sidebar.min.css" rel="stylesheet">
 </head>
@@ -21,6 +24,16 @@
         <div id="main-part" class="col-sm-7">
             <div class="polygen-item">
                 <h5 class="module">进行中的游戏</h5>
+
+                {{> room }}
+
+                <div id="ongoing-games">
+                    <a class="loader no-href"></a>
+                </div>
+            </div>
+
+            <div id="create-game" class="polygen-item">
+                <h5 class="module">创建游戏</h5>
             </div>
         </div>
 
