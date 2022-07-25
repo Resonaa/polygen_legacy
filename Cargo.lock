@@ -1670,7 +1670,6 @@ dependencies = [
  "sha256",
  "sqlx",
  "tokio-tungstenite",
- "tungstenite",
 ]
 
 [[package]]

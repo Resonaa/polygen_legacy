@@ -1,24 +1,26 @@
 <script id="announcement-template" type="text/template">
-    <article class="announcement">
-        <a class="no-href" data-bs-toggle="modal" data-bs-target="#modal-${aid}">${title}</a>
+    <a class="no-href" data-bs-toggle="modal" data-bs-target="#modal-${aid}">
+        <article class="announcement">
+            ${title}
+        </article>
+    </a>
 
-        <div class="modal fade" id="modal-${aid}">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-            
-                <div class="modal-header">
-                    <h4 class="modal-title">${title}</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-            
-                <div class="modal-body" style="text-align: initial;">$${content}</div>
-            
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
-                </div>
-            
-                </div>
+    <div class="modal fade" id="modal-${aid}">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+        
+            <div class="modal-header">
+                <h4 class="modal-title">${title}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+        
+            <div class="modal-body" style="text-align: initial;">$${content}</div>
+        
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+            </div>
+        
             </div>
         </div>
-    </article>
+    </div>
 </script>

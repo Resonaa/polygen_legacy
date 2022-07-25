@@ -14,8 +14,7 @@ use rocket::{
     },
 };
 use std::{error::Error, sync::Arc};
-use tokio_tungstenite::accept_async;
-use tungstenite::{Message, Result};
+use tokio_tungstenite::{accept_async, tungstenite::Message};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(crate = "rocket::serde")]
@@ -38,15 +37,15 @@ impl Event {
         })
     }
 
-    pub fn from(id: i32, value: &str) -> Result<Self, &str> {
-        #[derive(Serialize, Deserialize, Debug)]
+    pub fn from(id: i32, value: &str) -> Result<Self, serde_json::error::Error> {
+        #[derive(Serialize, Deserialize)]
         #[serde(crate = "rocket::serde")]
         struct FromEvent {
-            pub name: String,
-            pub dat: Value,
+            name: String,
+            dat: Value,
         }
 
-        let value: FromEvent = json::from_str(value).map_err(|_| "消息格式不正确")?;
+        let value: FromEvent = json::from_str(value)?;
 
         Ok(Self {
             id,
@@ -106,27 +105,24 @@ async fn handle_connection(
 
     loop {
         tokio::select! {
-            msg = ws_receiver.next() => {
-                if let Some(Ok(msg)) =  msg {
-                    let msg = msg.into_text()?;
-
-                    if let Some(response) = Event::from(id, &msg).ok().and_then(handler) {
-                        sender.send(response)?;
-                    }
-                }
-            },
-            msg = receiver.recv() => {
+            Some(Ok(msg)) = ws_receiver.next() =>
                 match msg {
-                    Ok(msg) => {
-                        if msg.id == id || msg.id == 0 {
-                            ws_sender.send(Message::Text(json::to_string(&msg)?)).await?;
-                        }
-                    }
-                    Err(error) => {
-                        error!("{}", error);
+                    Message::Text(msg) => if let Some(response) = Event::from(id, &msg).ok().and_then(handler) {
+                        sender.send(response)?;
                     },
+                    Message::Close(_) => {
+                        sender.send(Event::new(0, "close", id)?)?;
+                        break;
+                    }
+                    _ => ()
                 }
-            }
+            ,
+            Ok(msg) = receiver.recv() =>
+                if msg.id == id || msg.id == 0 {
+                    ws_sender.send(Message::Text(json::to_string(&msg)?)).await?;
+                }
         }
     }
+
+    Ok(())
 }

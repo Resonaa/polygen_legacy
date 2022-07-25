@@ -15,7 +15,6 @@ chrono = "0.4.19"
 dotenv = "0.15.0"
 captcha = "0.0.9"
 tokio-tungstenite = "0.17.1"
-tungstenite = "0.17.2"
 futures-util = "0.3.21"
 log = "0.4.17"
 

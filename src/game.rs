@@ -3,17 +3,12 @@
 mod core;
 mod generator;
 mod map;
+mod player;
+mod room;
 mod socket;
 
 pub use self::core::game;
-use crate::session::{Login, UserGuard};
-use crate::{db::Db, error, success, DbError};
-use rocket::{
-    http::{Cookie, CookieJar},
-    response::Redirect,
-    serde::json::{json, Json, Value},
-};
-use rocket_db_pools::{sqlx, Connection};
+use crate::session::UserGuard;
 use rocket_dyn_templates::{context, Template};
 
 #[get("/")]
