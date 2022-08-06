@@ -35,6 +35,3 @@ jobs:
         command: |
           cd ~/polygen
           ~/.cargo/bin/cargo build --release
-          screen -S polygen -X quit
-          screen -S polygen
-          sudo target/release/polygen
