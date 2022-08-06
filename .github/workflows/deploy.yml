@@ -1,10 +1,6 @@
 name: Deploy
 
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+on: [push]
 
 env:
   CARGO_TERM_COLOR: always
@@ -18,26 +14,24 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     
+    - name: Upload
+      uses: easingthemes/ssh-deploy@main
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
+        SOURCE: "./"
+        REMOTE_HOST: ${{ secrets.HOST }}
+        REMOTE_USER: ${{ secrets.USER }}
+        TARGET: "~/polygen"
+
     - name: Deploy
-      uses: cross-the-world/scp-pipeline@master
-      with:
-        host: ${{ secrets.HOST }}
-        user: ${{ secrets.USER }}
-        pass: ${{ secrets.PASS }}
-        connect_timeout: 10s
-        local: './*'
-        remote: ~/polygen
-      
-    - name: Execute
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
-        password: ${{ secrets.PASS }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd ~/polygen
           cargo build --release
           screen -S polygen -X quit
           screen -S polygen
           sudo target/release/polygen
-          
