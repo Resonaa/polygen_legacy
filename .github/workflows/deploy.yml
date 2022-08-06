@@ -14,24 +14,27 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     
-    - name: Upload
-      uses: easingthemes/ssh-deploy@main
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-        SOURCE: "./"
-        REMOTE_HOST: ${{ secrets.HOST }}
-        REMOTE_USER: ${{ secrets.USER }}
-        TARGET: "~/polygen"
+    - name: Upload      
+      uses: garygrossgarten/github-action-scp@release
+      with:
+        local: ./
+        remote: ~/polygen
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USER }}
+        password: ${{ secrets.PASS }}
+        dotfiles: true
+        privateKey: ${{ secrets.SERVER_SSH_KEY }}
 
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
+        password: ${{ secrets.PASS }}
         key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           cd ~/polygen
-          cargo build --release
+          ~/.cargo/bin/cargo build --release
           screen -S polygen -X quit
           screen -S polygen
           sudo target/release/polygen
