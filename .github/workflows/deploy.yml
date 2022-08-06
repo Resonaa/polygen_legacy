@@ -26,13 +26,13 @@ jobs:
         privateKey: ${{ secrets.SERVER_SSH_KEY }}
 
     - name: Deploy
-      uses: appleboy/ssh-action@master
+      uses: garygrossgarten/github-action-ssh@release
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USER }}
         password: ${{ secrets.PASS }}
-        key: ${{ secrets.SERVER_SSH_KEY }}
-        script: |
+        privateKey: ${{ secrets.SERVER_SSH_KEY }}
+        command: |
           cd ~/polygen
           ~/.cargo/bin/cargo build --release
           screen -S polygen -X quit
