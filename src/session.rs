@@ -43,6 +43,7 @@ fn index(user: UserGuard) -> Template {
         "index.min",
         context! {
             username: user.username,
+            home: true,
         },
     )
 }

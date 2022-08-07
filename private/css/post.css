@@ -24,7 +24,7 @@ p {
     margin-bottom: auto;
 }
 
-#load-more {
+#loader {
     text-align: center;
     user-select: none;
     -webkit-user-select: none;

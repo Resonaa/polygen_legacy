@@ -42,15 +42,15 @@ $(() => {
     }
 
     function addPost() {
-        if ($(".loader").is(":hidden")) {
+        if (!$("#loader").is(":hidden")) {
             return;
         }
 
-        $(".loader").html(`<div class="spinner-border"></div>`);
+        $("#loader").show();
 
         ajax("get", `/api/post?`, { parent: pid, page: page }, undefined, dat => {
             for (let i of dat) {
-                $("#load-more").before(postTemplate.render({
+                $("#loader").before(postTemplate.render({
                     realTime: i.time,
                     deltaTime: deltaTime(i.time),
                     pid: i.pid,
@@ -62,17 +62,23 @@ $(() => {
             }
 
             if (dat.length < 10) {
-                $(".loader").after(`<span id="no-more">没有更多了</span>`).hide();
+                $("#loader").remove();
             } else {
-                $(".loader").html("点击查看更多...");
+                $("#loader").hide();
             }
         });
     }
 
     addPost();
 
-    $("#load-more").click(() => {
-        page++;
-        addPost();
+    $(window).scroll(() => {
+        let scrollTop = $(this).scrollTop();
+        let scrollHeight = $(document).height();
+        let windowHeight = $(this).height();
+
+        if (scrollHeight - scrollTop - windowHeight <= 10) {
+            page++;
+            addPost();
+        }
     });
 });

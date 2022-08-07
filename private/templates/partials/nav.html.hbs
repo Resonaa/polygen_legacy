@@ -21,35 +21,42 @@
             <ul class="navbar-nav">
                 {{#if session}}
                 <li class="nav-item">
-                    <a class="nav-link {{#if login}} disabled {{else}} text-dark {{/if}}" href="/login">
+                    <a class="nav-link {{#if login}} active {{/if}}" href="/login">
                         <i class="far fa-sign-in-alt fa-fw"></i>
                         登录
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{#unless login}} disabled {{else}} text-dark {{/unless}}" href="/register">
+                    <a class="nav-link {{#unless login}} active {{/unless}}" href="/register">
                         <i class="far fa-user-plus fa-fw"></i>
                         注册
                     </a>
                 </li>
                 {{else}}
                 <li class="nav-item">
-                    <a class="nav-link {{#if game}} disabled {{else}} text-dark {{/if}}" href="/game">
+                    <a class="nav-link {{#if home}} active {{/if}}" href="/">
+                        <i class="far fa-home"></i>
+                        主页
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {{#if game}} active {{/if}}" href="/game">
                         <i class="far fa-crown fa-fw"></i>
                         游戏
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{#if leaderboard}} disabled {{else}} text-dark {{/if}}" href="/leaderboard">
+                    <a class="nav-link {{#if leaderboard}} active {{/if}}" href="/leaderboard">
                         <i class="far fa-signal fa-fw"></i>
                         排行榜
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link {{#if webadmin}} disabled {{else}} text-dark {{/if}}" href="/webadmin">
+                    <a class="nav-link {{#if webadmin}} active {{/if}}" href="/webadmin">
                         <i class="far fa-tachometer-alt fa-fw"></i>
                         管理后台
                     </a>
@@ -61,7 +68,7 @@
             <ul class="navbar-nav">
                 <li class="nav-item">
                     <div class="dropdown dropstart text-end flex-end">
-                        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser"
+                        <a href="#" class="nav-link active d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             {{ username }}
                         </a>
