@@ -1,7 +1,9 @@
 $(() => {
     let roomTemplate = juicer.compile($("#room-template").html());
 
-    $("#ongoing-games").html("");
+    let translation = {
+        Quadrilateral: "四边形", Hexagon: "六边形", Random: "随机地图",
+    };
 
     function addRoom(room) {
         let players = `${room.players.length}玩家: `;
@@ -12,30 +14,20 @@ $(() => {
 
         $("#ongoing-games").append(roomTemplate.render({
             rid: room.rid,
-            status: room.status,
-            config: room.config,
+            status: room.status.toLowerCase(),
+            mode: translation[room.map.config.mode],
+            map: translation[room.map.config.tp],
             players: players.substring(0, players.length - 2)
         }));
     }
 
-    addRoom({
-        rid: 1,
-        status: "error",
-        config: {
-            mode: "六边形",
-            map: "随机地图"
-        },
-        players: ["jwcub"]
-    });
-    addRoom({
-        rid: 2,
-        status: "ongoing",
-        config: {
-            mode: "四边形",
-            map: "空白地图"
-        },
-        players: ["jwcub"]
-    });
+    ajax("get", "/game/list", undefined, undefined, rooms => {
+        $("#ongoing-games").html("");
 
-    $("[data-bs-toggle='tooltip']").each((_, e) => new bootstrap.Tooltip(e));
+        for (let room of rooms) {
+            addRoom(room);
+        }
+
+        $("[data-bs-toggle='tooltip']").each((_, e) => new bootstrap.Tooltip(e));
+    });
 });

@@ -1,8 +1,19 @@
-pub use land::*;
+use super::land::*;
 use rocket::serde::{Deserialize, Serialize};
 use std::ops::{Index, IndexMut};
 
-mod land;
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+#[serde(crate = "rocket::serde")]
+pub enum MapMode {
+    Hexagon,
+    Quadrilateral,
+}
+
+impl Default for MapMode {
+    fn default() -> Self {
+        Self::Hexagon
+    }
+}
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 #[serde(crate = "rocket::serde")]
@@ -20,6 +31,7 @@ impl Default for MapType {
 #[serde(crate = "rocket::serde")]
 pub struct MapConfig {
     pub size: usize,
+    pub mode: MapMode,
     pub tp: MapType,
     pub player_count: i32,
     pub mountain_density: f64,
@@ -30,7 +42,8 @@ impl Default for MapConfig {
     fn default() -> Self {
         Self {
             size: 20,
-            tp: MapType::Random,
+            mode: MapMode::default(),
+            tp: MapType::default(),
             player_count: 0,
             mountain_density: 0.13,
             city_density: 0.05,
@@ -43,18 +56,6 @@ impl Default for MapConfig {
 pub struct Map {
     pub config: MapConfig,
     gm: Vec<Vec<Land>>,
-}
-
-impl Map {
-    pub fn new(size: usize) -> Self {
-        Self {
-            config: MapConfig {
-                size,
-                ..Default::default()
-            },
-            gm: vec![vec![Land::default(); size + 1]; size + 1],
-        }
-    }
 }
 
 impl Index<usize> for Map {

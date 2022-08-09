@@ -7,15 +7,19 @@ use rocket::tokio::{
     sync::Mutex,
     time::{sleep, Duration},
 };
-use std::sync::Arc;
+
+mod generator;
+pub mod land;
+pub mod map;
 
 lazy_static! {
-    static ref ROOMS: Arc<Mutex<Vec<Room>>> = Arc::new(Mutex::new(Vec::new()));
+    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(Vec::new());
 }
 
 pub async fn game() {
-    let socket = Socket::new("0.0.0.0:7878", |event| {
+    let socket = Socket::new("0.0.0.0:7878", |event| async move {
         info!("got {:?}", event);
+        ROOMS.lock().await.push(Room::default());
         Event::new(event.id, "echo", format!("hello, {}!", event.id)).ok()
     })
     .await;

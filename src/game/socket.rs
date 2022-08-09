@@ -60,9 +60,9 @@ pub struct Socket {
 }
 
 impl Socket {
-    pub async fn new(
+    pub async fn new<T: futures_util::Future<Output = Option<Event>> + Send + Sync + 'static>(
         addr: &'static str,
-        handler: impl Fn(Event) -> Option<Event> + Send + Sync + Copy + 'static,
+        handler: impl Fn(Event) -> T + Send + Sync + Copy + 'static,
     ) -> Self {
         let listener = TcpListener::bind(addr).await.unwrap();
         info!("WS Listening on: {}", addr);
@@ -93,12 +93,12 @@ impl Socket {
     }
 }
 
-async fn handle_connection(
+async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
     stream: TcpStream,
     sender: Sender<Event>,
     mut receiver: Receiver<Event>,
     id: i32,
-    handler: impl Fn(Event) -> Option<Event> + Copy,
+    handler: impl Fn(Event) -> T + Copy + Send,
 ) -> Result<(), Box<dyn Error + Send + Sync>> {
     let ws_stream = accept_async(stream).await?;
     let (mut ws_sender, mut ws_receiver) = ws_stream.split();
@@ -107,8 +107,10 @@ async fn handle_connection(
         tokio::select! {
             Some(Ok(msg)) = ws_receiver.next() =>
                 match msg {
-                    Message::Text(msg) => if let Some(response) = Event::from(id, &msg).ok().and_then(handler) {
-                        sender.send(response)?;
+                    Message::Text(msg) => if let Ok(event) = Event::from(id, &msg) {
+                        if let(Some(response)) = handler(event).await {
+                            sender.send(response)?;
+                        }
                     },
                     Message::Close(_) => {
                         sender.send(Event::new(0, "close", id)?)?;
