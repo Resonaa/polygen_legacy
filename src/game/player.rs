@@ -1,8 +1,13 @@
 use rocket::serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default, Hash)]
 #[serde(crate = "rocket::serde")]
 pub struct Player {
-    pub username: String,
-    pub id: i32,
+    pub color: i32,
+}
+
+impl Player {
+    pub fn new(color: i32) -> Self {
+        Self { color }
+    }
 }

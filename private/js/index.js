@@ -66,6 +66,8 @@ $(() => {
             } else {
                 $("#loader").hide();
             }
+
+            $("[data-bs-toggle='tooltip']").each((_, e) => new bootstrap.Tooltip(e));
         });
     }
 

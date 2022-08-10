@@ -1,3 +1,5 @@
+use rocket::serde::json::Value;
+
 #[macro_export]
 macro_rules! success {
     ($dat: expr) => {
@@ -11,3 +13,5 @@ macro_rules! error {
         Err(json!({"status": "error", "msg": $dat}))
     };
 }
+
+pub type Response = Result<Value, Value>;

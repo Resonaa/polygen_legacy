@@ -17,6 +17,8 @@ captcha = "0.0.9"
 tokio-tungstenite = "0.17.1"
 futures-util = "0.3.21"
 log = "0.4.17"
+hashbrown = "0.12.3"
+fastrand = "1.8.0"
 
 [build-dependencies]
 minify-js = "0.1.5"

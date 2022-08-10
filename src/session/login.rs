@@ -1,9 +1,9 @@
 use super::{Login, UserGuard};
-use crate::{db::Db, error, success, DbError};
+use crate::{db::Db, error, success, DbError, Response};
 use rocket::{
     http::{Cookie, CookieJar},
     response::Redirect,
-    serde::json::{json, Json, Value},
+    serde::json::{json, Json},
 };
 use rocket_db_pools::{sqlx, Connection};
 use rocket_dyn_templates::{context, Template};
@@ -19,11 +19,7 @@ fn login_page() -> Template {
 }
 
 #[post("/login", data = "<login>")]
-async fn post_login(
-    mut db: Connection<Db>,
-    jar: &CookieJar<'_>,
-    login: Json<Login>,
-) -> Result<Value, Value> {
+async fn post_login(mut db: Connection<Db>, jar: &CookieJar<'_>, login: Json<Login>) -> Response {
     if login.captcha.to_lowercase() != jar.get_private("captcha").conv()?.value().to_lowercase() {
         return error!("验证码错误");
     }

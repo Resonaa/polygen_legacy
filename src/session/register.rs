@@ -1,9 +1,9 @@
 use super::{Login, UserGuard};
-use crate::{db::Db, error, is_valid_username, success, DbError};
+use crate::{db::Db, error, is_valid_username, success, DbError, Response};
 use rocket::{
     http::{Cookie, CookieJar},
     response::Redirect,
-    serde::json::{json, Json, Value},
+    serde::json::{json, Json},
 };
 use rocket_db_pools::{sqlx, Connection};
 use rocket_dyn_templates::{context, Template};
@@ -23,7 +23,7 @@ async fn post_register(
     mut db: Connection<Db>,
     jar: &CookieJar<'_>,
     register: Json<Login>,
-) -> Result<Value, Value> {
+) -> Response {
     if register.captcha.to_lowercase() != jar.get_private("captcha").conv()?.value().to_lowercase()
     {
         return error!("验证码错误");

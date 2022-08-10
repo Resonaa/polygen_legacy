@@ -1,6 +1,6 @@
-use crate::{db::Db, session::UserGuard, success, DbError};
+use crate::{db::Db, session::UserGuard, success, DbError, Response};
 use rocket::serde::{
-    json::{json, Json, Value},
+    json::{json, Json},
     Deserialize, Serialize,
 };
 use rocket_db_pools::Connection;
@@ -14,7 +14,7 @@ struct Announcement {
 }
 
 #[get("/announcement")]
-async fn list(mut db: Connection<Db>, _user: UserGuard) -> Result<Value, Value> {
+async fn list(mut db: Connection<Db>, _user: UserGuard) -> Response {
     success!(sqlx::query_as!(Announcement, "SELECT * FROM announcement")
         .fetch_all(&mut *db)
         .await
@@ -22,7 +22,7 @@ async fn list(mut db: Connection<Db>, _user: UserGuard) -> Result<Value, Value> 
 }
 
 #[get("/announcement?<aid>", rank = 2)]
-async fn get(mut db: Connection<Db>, _user: UserGuard, aid: i32) -> Result<Value, Value> {
+async fn get(mut db: Connection<Db>, _user: UserGuard, aid: i32) -> Response {
     success!(sqlx::query_as!(
         Announcement,
         "SELECT * FROM announcement WHERE aid = ?",
@@ -45,7 +45,7 @@ async fn create(
     mut db: Connection<Db>,
     _user: UserGuard,
     create_announcement: Json<CreateAnnouncement>,
-) -> Result<Value, Value> {
+) -> Response {
     sqlx::query!(
         "INSERT INTO announcement (title, content) VALUES (?1, ?2)",
         create_announcement.title,
@@ -63,7 +63,7 @@ async fn update(
     mut db: Connection<Db>,
     _user: UserGuard,
     update_announcement: Json<Announcement>,
-) -> Result<Value, Value> {
+) -> Response {
     sqlx::query!(
         "UPDATE announcement SET title = ?1, content = ?2 WHERE aid = ?3",
         update_announcement.title,
@@ -78,7 +78,7 @@ async fn update(
 }
 
 #[delete("/announcement", data = "<aid>")]
-async fn delete(mut db: Connection<Db>, _user: UserGuard, aid: Json<i32>) -> Result<Value, Value> {
+async fn delete(mut db: Connection<Db>, _user: UserGuard, aid: Json<i32>) -> Response {
     let aid = aid.into_inner();
     sqlx::query!("DELETE FROM announcement WHERE aid = ?", aid)
         .execute(&mut *db)

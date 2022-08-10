@@ -8,10 +8,11 @@ pub mod db;
 pub mod error;
 pub mod game;
 pub mod post;
-mod responds;
+mod response;
 pub mod session;
 
 use regex::Regex;
+pub use response::Response;
 use rocket::serde::json::{json, Value};
 
 pub trait DbError<T> {

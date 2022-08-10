@@ -1,9 +1,9 @@
-use crate::{db::Db, session::UserGuard, success, DbError};
-use rocket::serde::json::{json, Value};
+use crate::{db::Db, session::UserGuard, success, DbError, Response};
+use rocket::serde::json::json;
 use rocket_db_pools::Connection;
 
 #[get("/user/info?<username>")]
-async fn info(mut db: Connection<Db>, _user: UserGuard, username: String) -> Result<Value, Value> {
+async fn info(mut db: Connection<Db>, _user: UserGuard, username: String) -> Response {
     let dat = sqlx::query!("SELECT uid FROM user WHERE username = ?", username)
         .fetch_one(&mut *db)
         .await

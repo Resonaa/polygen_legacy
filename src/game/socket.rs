@@ -1,9 +1,7 @@
+use super::event::{Event, EventName};
 use futures_util::{SinkExt, StreamExt};
 use rocket::{
-    serde::{
-        json::{self, serde_json, Value},
-        Deserialize, Serialize,
-    },
+    serde::json,
     tokio::{
         self,
         net::{TcpListener, TcpStream},
@@ -15,45 +13,6 @@ use rocket::{
 };
 use std::{error::Error, sync::Arc};
 use tokio_tungstenite::{accept_async, tungstenite::Message};
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-#[serde(crate = "rocket::serde")]
-pub struct Event {
-    pub id: i32,
-    pub name: String,
-    pub dat: Value,
-}
-
-impl Event {
-    pub fn new(
-        id: i32,
-        name: impl ToString,
-        dat: impl Serialize,
-    ) -> Result<Self, serde_json::error::Error> {
-        Ok(Self {
-            id,
-            name: name.to_string(),
-            dat: json::to_value(dat)?,
-        })
-    }
-
-    pub fn from(id: i32, value: &str) -> Result<Self, serde_json::error::Error> {
-        #[derive(Serialize, Deserialize)]
-        #[serde(crate = "rocket::serde")]
-        struct FromEvent {
-            name: String,
-            dat: Value,
-        }
-
-        let value: FromEvent = json::from_str(value)?;
-
-        Ok(Self {
-            id,
-            name: value.name,
-            dat: value.dat,
-        })
-    }
-}
 
 pub struct Socket {
     s: Sender<Event>,
@@ -75,6 +34,7 @@ impl Socket {
             while let Ok((stream, _)) = listener.accept().await {
                 let mut id = id.lock().await;
                 *id += 1;
+
                 tokio::spawn(handle_connection(
                     stream,
                     ps.clone(),
@@ -103,17 +63,23 @@ async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
     let ws_stream = accept_async(stream).await?;
     let (mut ws_sender, mut ws_receiver) = ws_stream.split();
 
+    if let Some(response) = handler(Event::new(id, EventName::Open, ())?).await {
+        sender.send(response)?;
+    }
+
     loop {
         tokio::select! {
             Some(Ok(msg)) = ws_receiver.next() =>
                 match msg {
                     Message::Text(msg) => if let Ok(event) = Event::from(id, &msg) {
-                        if let(Some(response)) = handler(event).await {
+                        if let Some(response) = handler(event).await {
                             sender.send(response)?;
                         }
                     },
                     Message::Close(_) => {
-                        sender.send(Event::new(0, "close", id)?)?;
+                        if let Some(response) = handler(Event::new(id, EventName::Close, ())?).await {
+                            sender.send(response)?;
+                        }
                         break;
                     }
                     _ => ()

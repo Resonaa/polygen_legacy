@@ -1,9 +1,9 @@
-use crate::{db::Db, error, session::UserGuard, success, DbError};
+use crate::{db::Db, error, session::UserGuard, success, DbError, Response};
 use chrono::prelude::*;
 use rocket::{
     http::CookieJar,
     serde::{
-        json::{json, Json, Value},
+        json::{json, Json},
         Deserialize, Serialize,
     },
 };
@@ -20,12 +20,7 @@ struct Post {
 }
 
 #[get("/post?<parent>&<page>")]
-async fn list(
-    mut db: Connection<Db>,
-    _user: UserGuard,
-    parent: i64,
-    page: usize,
-) -> Result<Value, Value> {
+async fn list(mut db: Connection<Db>, _user: UserGuard, parent: i64, page: usize) -> Response {
     if !(1..usize::max_value() / 10).contains(&page) {
         return error!("数据范围错误");
     }
@@ -56,7 +51,7 @@ async fn list(
 }
 
 #[get("/post?<pid>", rank = 2)]
-async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Result<Value, Value> {
+async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Response {
     success!(
         sqlx::query_as!(Post, "SELECT * FROM post WHERE pid = ?", pid)
             .fetch_one(&mut *db)
@@ -77,7 +72,7 @@ async fn create(
     _user: UserGuard,
     jar: &CookieJar<'_>,
     create_post: Json<CreatePost>,
-) -> Result<Value, Value> {
+) -> Response {
     let content = create_post.content.trim();
 
     if !(1..=100000).contains(&content.chars().count()) {
@@ -114,7 +109,7 @@ async fn update(
     mut db: Connection<Db>,
     _user: UserGuard,
     update_post: Json<UpdatePost>,
-) -> Result<Value, Value> {
+) -> Response {
     let content = update_post.content.trim();
 
     sqlx::query!(
@@ -130,7 +125,7 @@ async fn update(
 }
 
 #[delete("/post", data = "<pid>")]
-async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Result<Value, Value> {
+async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Response {
     let pid = pid.into_inner();
 
     sqlx::query!("DELETE FROM post WHERE pid = ?", pid)
@@ -142,11 +137,7 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Res
 }
 
 #[get("/post/commentamount?<pid>")]
-async fn comment_amount(
-    mut db: Connection<Db>,
-    _user: UserGuard,
-    pid: i64,
-) -> Result<Value, Value> {
+async fn comment_amount(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Response {
     let mut q = vec![pid];
 
     let mut cnt = 0;

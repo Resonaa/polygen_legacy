@@ -1,5 +1,6 @@
 use super::{core::map::Map, player::Player};
 use rocket::serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[serde(crate = "rocket::serde")]
@@ -18,8 +19,17 @@ impl Default for RoomStatus {
 #[derive(Default, Serialize, Deserialize, Debug, Clone)]
 #[serde(crate = "rocket::serde")]
 pub struct Room {
-    pub players: Vec<Player>,
+    pub players: HashMap<String, Player>,
     pub map: Map,
-    pub rid: i32,
+    pub rid: usize,
     pub status: RoomStatus,
+}
+
+impl Room {
+    pub fn new(rid: usize) -> Self {
+        Self {
+            rid,
+            ..Default::default()
+        }
+    }
 }
