@@ -18,18 +18,28 @@ pub mod land;
 pub mod map;
 
 lazy_static! {
-    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(Vec::new());
+    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(vec![Room::new(0), Room::new(1)]);
     pub static ref IDENTITIES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     pub static ref PLAYERS: Mutex<HashMap<i32, String>> = Mutex::new(HashMap::new());
 }
 
 pub async fn remove_player(username: &str) {
-    IDENTITIES.lock().await.remove(username);
+    remove_identity(username).await;
 
     for room in &mut *ROOMS.lock().await {
         if room.players.remove(username).is_some() {
             return;
         }
+    }
+}
+
+async fn remove_identity(username: &str) {
+    let mut players = PLAYERS.lock().await;
+
+    if let Some((id, _)) = players.iter().find(|x| x.1 == username) {
+        let id = id.to_owned();
+
+        players.remove(&id);
     }
 }
 
@@ -43,8 +53,9 @@ async fn identify(value: Value) -> Result<String, ()> {
 
     let identification: FromIdentification = json::from_value(value).map_err(|_| ())?;
 
-    for (username, identity) in IDENTITIES.lock().await.iter() {
+    for (username, identity) in &*IDENTITIES.lock().await {
         if identity == &identification.identity {
+            remove_identity(username).await;
             return Ok(username.to_string());
         }
     }
@@ -56,23 +67,17 @@ pub async fn game() {
     let _socket = Socket::new("0.0.0.0:7878", |event| async move {
         info!("{:?}", event);
 
-        let mut rooms = ROOMS.lock().await;
-        if rooms.len() <= 2 {
-            rooms.push(Room::new(0));
-            rooms.push(Room::new(1));
-        }
-
         if event.name == EventName::Identify {
             if let Ok(username) = identify(event.dat).await {
                 PLAYERS.lock().await.insert(event.id, username);
                 return Event::new(event.id, EventName::Message, "身份验证成功").ok();
             } else {
-                return Event::new(event.id, EventName::Message, "身份验证失败").ok();
+                return Event::new(event.id, EventName::Abort, ()).ok();
             }
         }
 
         let username = match PLAYERS.lock().await.get(&event.id) {
-            None => return Event::new(event.id, EventName::Message, "未进行身份验证").ok(),
+            None => return Event::new(event.id, EventName::Abort, ()).ok(),
             Some(username) => username,
         }
         .to_string();
@@ -89,7 +94,6 @@ pub async fn game() {
                 format!("hello, {}!", event.id),
             )
             .ok(),
-
             _ => None,
         }
     })

@@ -19,7 +19,8 @@ $(() => {
             status: room.status.toLowerCase(),
             mode: translation[room.map.config.mode],
             map: translation[room.map.config.tp],
-            players: players.substring(0, players.length - 2)
+            players: players.substring(0, players.length - 2),
+            rid: room.rid
         }));
     }
 
@@ -28,16 +29,6 @@ $(() => {
 
         for (let room of rooms) {
             addRoom(room);
-
-            if (room.status != "Error") {
-                $(".room-header").last().click(() =>
-                    ajax("post", "/api/room", room.rid, () => swal("加入房间失败", "房间不存在", "error"), identity => {
-                        console.log(identity);
-                        swal("加入房间成功", identity, "success");
-                        window.location.reload();
-                    })
-                );
-            }
         }
 
         $("[data-bs-toggle='tooltip']").each((_, e) => new bootstrap.Tooltip(e));

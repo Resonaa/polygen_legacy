@@ -6,8 +6,8 @@ use rocket::serde::{
 #[derive(Serialize, Deserialize, Debug, Copy, Clone, PartialEq, Eq)]
 #[serde(crate = "rocket::serde")]
 pub enum EventName {
-    Open,
     Close,
+    Abort,
     Message,
     Identify,
 }

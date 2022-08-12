@@ -63,10 +63,6 @@ async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
     let ws_stream = accept_async(stream).await?;
     let (mut ws_sender, mut ws_receiver) = ws_stream.split();
 
-    if let Some(response) = handler(Event::new(id, EventName::Open, ())?).await {
-        sender.send(response)?;
-    }
-
     loop {
         tokio::select! {
             Some(Ok(msg)) = ws_receiver.next() =>
@@ -76,17 +72,23 @@ async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
                             sender.send(response)?;
                         }
                     },
-                    Message::Close(_) => {
+                    _ => {
                         if let Some(response) = handler(Event::new(id, EventName::Close, ())?).await {
                             sender.send(response)?;
                         }
                         break;
                     }
-                    _ => ()
                 }
             ,
             Ok(msg) = receiver.recv() =>
                 if msg.id == id || msg.id == 0 {
+                    if msg.name == EventName::Abort {
+                        if let Some(response) = handler(Event::new(id, EventName::Close, ())?).await {
+                            ws_sender.send(Message::Text(json::to_string(&response)?)).await?;
+                        }
+                        break;
+                    }
+
                     ws_sender.send(Message::Text(json::to_string(&msg)?)).await?;
                 }
         }
