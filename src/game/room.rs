@@ -1,13 +1,12 @@
 use super::{core::map::Map, player::Player};
 use rocket::serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::{collections::HashMap, iter::repeat_with};
 
 #[derive(Serialize, Deserialize, Debug, Copy, Clone)]
 #[serde(crate = "rocket::serde")]
 pub enum RoomStatus {
     Waiting,
     Ongoing,
-    Error,
 }
 
 impl Default for RoomStatus {
@@ -21,14 +20,14 @@ impl Default for RoomStatus {
 pub struct Room {
     pub players: HashMap<String, Player>,
     pub map: Map,
-    pub rid: usize,
+    pub rid: String,
     pub status: RoomStatus,
 }
 
 impl Room {
-    pub fn new(rid: usize) -> Self {
+    pub fn new() -> Self {
         Self {
-            rid,
+            rid: repeat_with(fastrand::alphanumeric).take(5).collect(),
             ..Default::default()
         }
     }

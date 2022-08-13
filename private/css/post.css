@@ -5,9 +5,6 @@
 .post-header {
     padding: 10px 15px;
     line-height: 1.2;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
     font-size: 14px;
     color: #999;
 }
@@ -35,10 +32,14 @@ p {
     font-weight: bold;
 }
 
-.post-header a {
+.post-header>a {
     color: #999;
 }
 
-.post-toolbar a {
-    margin-left: 0.5em;
+.post-toolbar .dropdown-toggle::after {
+    display: none;
+}
+
+.post-toolbar .dropdown-menu {
+    min-width: unset;
 }

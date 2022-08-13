@@ -19,7 +19,7 @@ fn room_list(user: UserGuard) -> Template {
 }
 
 #[get("/<rid>")]
-async fn game_core(user: UserGuard, rid: usize) -> Template {
+async fn game_core(user: UserGuard, rid: String) -> Template {
     remove_player(&user.username).await;
 
     for room in &mut *ROOMS.lock().await {

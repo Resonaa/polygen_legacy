@@ -18,7 +18,7 @@ pub mod land;
 pub mod map;
 
 lazy_static! {
-    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(vec![Room::new(0), Room::new(1)]);
+    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(vec![Room::new(), Room::new()]);
     pub static ref IDENTITIES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     pub static ref PLAYERS: Mutex<HashMap<i32, String>> = Mutex::new(HashMap::new());
 }

@@ -6,42 +6,29 @@
 
 .room {
     padding: 6px;
-    min-width: 260px;
 }
 
 .room-header {
     padding: 10px 15px;
     line-height: 1.2;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
+    text-align: center;
     font-size: 15px;
     font-weight: bold;
+    display: block;
 }
 
 .header-waiting {
     color: #5eb95e;
     background-color: rgba(94, 185, 94, .15);
-    cursor: pointer;
 }
 
 .bg-waiting {
     background-color: #5eb95e;
 }
 
-.header-error {
-    color: #dd514c;
-    background-color: rgba(221, 81, 76, .15);
-}
-
-.bg-error {
-    background-color: #e74c3c;
-}
-
 .header-ongoing {
     color: #297fff;
     background-color: rgba(41, 127, 255, .15);
-    cursor: pointer;
 }
 
 .bg-ongoing {
@@ -49,12 +36,7 @@
 }
 
 .room-content {
-    display: block;
     background: white;
     font-size: 14px;
     padding: 15px;
-}
-
-.room-toolbar {
-    float: right;
 }

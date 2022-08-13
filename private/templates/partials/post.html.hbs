@@ -3,12 +3,22 @@
         <header class="post-header">
             $${author}
 
-            <time data-bs-toggle="tooltip" data-bs-placement="bottom" title="${realTime}">${deltaTime}</time>
+            <time data-bs-toggle="tooltip" title="${realTime}">${deltaTime}</time>
             ${commentAmount}评论
 
-            <div class="post-toolbar">
-                <a class="modify-post no-href">修改</a>
-                <a class="delete-post no-href">删除</a>
+            <div class="post-toolbar dropdown">
+                <i class="far fa-ellipsis-h dropdown-toggle no-href" data-bs-toggle="dropdown"></i>
+
+                <ul class="dropdown-menu shadow">
+                    <li><a class="dropdown-item edit-post no-href">
+                        <i class="far fa-edit fa-fw"></i>
+                        编辑
+                    </a></li>
+                    <li><a class="dropdown-item text-danger delete-post no-href">
+                        <i class="far fa-trash-alt fa-fw"></i>
+                        删除
+                    </a></li>
+                </ul>
             </div>
         </header>
 

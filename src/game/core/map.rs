@@ -34,8 +34,6 @@ pub struct MapConfig {
     pub mode: MapMode,
     pub tp: MapType,
     pub player_count: i32,
-    pub mountain_density: f64,
-    pub city_density: f64,
 }
 
 impl Default for MapConfig {
@@ -45,8 +43,6 @@ impl Default for MapConfig {
             mode: MapMode::default(),
             tp: MapType::default(),
             player_count: 0,
-            mountain_density: 0.13,
-            city_density: 0.05,
         }
     }
 }
