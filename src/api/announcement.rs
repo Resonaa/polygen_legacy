@@ -89,5 +89,5 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, aid: Json<i32>) -> Res
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    return routes![list, get, create, update, delete];
+    routes![list, get, create, update, delete]
 }
