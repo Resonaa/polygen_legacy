@@ -1,4 +1,6 @@
 $(() => {
+    $(".ui.sidebar").sidebar("attach events", ".toc.item");
+
     function changeCaptcha() {
         $("#captcha").val("");
         $(".captcha")[0].src = "/api/captcha?t=" + Math.random();
@@ -6,14 +8,16 @@ $(() => {
 
     $(".captcha").click(changeCaptcha);
 
-    $("#submit").click(() => {
-        $(".spinner-border").show();
-        $("#submit").attr("disabled", 0);
+    $(".submit").click(() => {
+        disableButton(".submit");
 
         function show(s) {
-            swal("注册失败", s, "error");
-            $(".spinner-border").hide();
-            $("#submit").removeAttr("disabled");
+            $("body").toast({
+                class: "error",
+                title: "注册失败",
+                message: s
+            });
+            enableButton(".submit");
             changeCaptcha();
         }
 
@@ -28,10 +32,10 @@ $(() => {
             , msg => show(msg), () => window.location.href = "/");
     });
 
-    $(".auth-form").keydown(e => {
+    $("form").keydown(e => {
         let keyCode = e.which || e.keyCode;
         if (keyCode == 13) {
-            $("#submit").click();
+            $(".submit").click();
         }
     });
 });

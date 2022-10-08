@@ -1,106 +1,27 @@
-nav {
-    user-select: none;
-    -webkit-user-select: none;
-    background: white;
-    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, .07), 0 10px 20px -2px rgba(0, 0, 0, .04);
+.hidden {
+    display: none !important;
 }
 
-@media only screen and (min-width: 576px) {
-    nav {
-        max-height: 50px;
-    }
+.footer.segment {
+    padding: 5em 0em;
 }
 
-.nav-link:hover {
-    background-color: rgba(62, 39, 35, 0.03);
+.main.container {
+    margin-top: 6em;
+    margin-bottom: 3em;
 }
 
-.polygen-item {
-    position: relative;
-    background: rgba(255, 255, 255, .7);
-    margin-bottom: 8px;
-    padding: 12px 16px;
-    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, .07), 0 10px 20px -2px rgba(0, 0, 0, .04);
-}
-
-body {
-    background: rgb(239, 239, 239);
-    font-family: -apple-system, BlinkMacSystemFont, "San Francisco", "Helvetica Neue", "Noto Sans", "Noto Sans CJK SC", "Noto Sans CJK", "Source Han Sans", "PingFang SC", "Segoe UI", "Microsoft YaHei", sans-serif;
-}
-
-a {
-    text-decoration: none;
-    position: relative;
-}
-
-a.at::after {
-    content: "";
-    height: 2px;
+.pusher {
     overflow: hidden;
-    display: block;
-    left: 0;
-    bottom: 0;
-    position: absolute;
-    width: 100%;
-    background: currentColor;
-    transform: scaleX(0);
-    transition: all 0.25s;
+    min-height: 100%;
 }
 
-a.at:hover::after {
-    transform: scaleX(1);
-}
+@media only screen and (max-width: 700px) {
+    .fixed.menu>.ui.container>.item {
+        display: none !important;
+    }
 
-a.at {
-    font-weight: bold;
-}
-
-.no-href {
-    cursor: pointer;
-}
-
-.mp-editor-toolbar {
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-button {
-    line-height: 1.25 !important;
-}
-
-th,
-td {
-    border: 1px solid #ddd;
-    padding: 6px 13px;
-}
-
-@font-face {
-    font-family: 'Font Awesome 5 Pro';
-    font-style: normal;
-    font-weight: 400;
-    font-display: block;
-    src: url("/webfonts/fa-regular-400.eot");
-    src: url("/webfonts/fa-regular-400.eot?#iefix") format("embedded-opentype"), url("/webfonts/fa-regular-400.woff2") format("woff2"), url("/webfonts/fa-regular-400.woff") format("woff"), url("/webfonts/fa-regular-400.ttf") format("truetype"), url("/webfonts/fa-regular-400.svg#fontawesome") format("svg");
-}
-
-.far {
-    font-family: 'Font Awesome 5 Pro';
-    font-weight: 400;
-}
-
-.form-label {
-    margin-bottom: .3rem;
-}
-
-.module {
-    text-align: center;
-    font-weight: 550;
-}
-
-.dropdown-item {
-    display: flex;
-    gap: .5em;
-    align-items: center;
-    user-select: none;
-    -webkit-user-select: none;
+    .fixed.menu>.ui.container>.toc {
+        display: unset !important;
+    }
 }

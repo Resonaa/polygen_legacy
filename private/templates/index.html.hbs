@@ -6,41 +6,23 @@
 
     {{> prelude }}
 
-    {{> renderer }}
-
-    {{> editor }}
-
-    <link href="/css/post.min.css" rel="stylesheet">
-
-    <script src="/js/sidebar.min.js"></script>
-    <link href="/css/sidebar.min.css" rel="stylesheet">
-
     <script src="/js/index.min.js"></script>
 </head>
 
-<body class="container-fluid">
-    {{> nav }}
+<body>
+    {{> sidebar-nav }}
 
-    <div class="row">
-        {{> sleft }}
+    <div class="pusher">
+        {{> nav }}
 
-        <div id="main-part" class="col-sm-7">
-            <div class="polygen-item">
-                <div id="editor-container" style="height: 170px">
-                    <div id="post-editor"></div>
-                </div>
-
-                <button id="post" class="btn btn-primary mt-2">发布说说</button>
-            </div>
-
-            {{> post}}
-
-            <div id="loader" class="polygen-item" style="display: none;">
-                <div class="spinner-border"></div>
-            </div>
+        <div class="ui main text container">
+            <h1 class="ui header">Semantic UI Fixed Template</h1>
+            <p>This is a basic fixed menu template using fixed size containers.</p>
+            <p>A text container is used for the main container, which is useful for single column layouts</p>
         </div>
 
-        {{> sright }}
+
+        {{> footer }}
     </div>
 </body>
 

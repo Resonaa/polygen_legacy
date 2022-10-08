@@ -49,10 +49,14 @@ fn index(user: UserGuard) -> Template {
 }
 
 #[get("/", rank = 2)]
-fn no_auth_index() -> Redirect {
-    Redirect::to(uri!("/login"))
+fn no_auth_index() -> Template {
+    Template::render(
+        "index.min",
+        context! {
+            home: true
+        },
+    )
 }
-
 pub fn routes() -> Vec<rocket::Route> {
     [
         routes![index, no_auth_index],

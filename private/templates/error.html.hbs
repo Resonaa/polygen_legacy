@@ -7,14 +7,20 @@
     {{> prelude }}
 </head>
 
-<body class="container">
-    {{> nav}}
+<body>
+    {{> sidebar-nav }}
 
-    <div class="polygen-item">
-        <h1>{{status}}</h1>
+    <div class="pusher">
+        {{> nav }}
 
-        <span>3 秒后将返回上一页</span>
+        <div class="ui main text container">
+            <h1>{{status}}</h1>
+            <p>3 秒后将返回上一页</p>
+        </div>
+
+        {{> footer }}
     </div>
+
     <script>
         setTimeout(() => window.history.back(), 3000);
     </script>

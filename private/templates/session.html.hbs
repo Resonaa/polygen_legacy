@@ -11,63 +11,72 @@
 </head>
 
 <body>
-    {{> nav }}
+    {{> sidebar-nav }}
 
-    <div class="auth-box">
-        <div class="auth-card">
-            <form class="auth-form">
-                <img src="/img/polygen.png">
+    <div class="pusher">
+        {{> nav }}
 
-                <div class="auth-gruop">
-                    <div class="mb-2 mt-3">
-                        <label for="username" class="form-label">用户名</label>
-                        <div class="auth-group">
-                            <input id="username" type="username" class="form-control" placeholder="用户名" name="username">
+        <div class="ui main text container">
+            <div class="auth-box">
+                <form class="ui large form">
+                    <div class="ui stacked">
+                        <div class="field" style="text-align: center;">
+                            <img src="/img/polygen.png">
+                        </div>
+
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="user icon"></i>
+                                <input type="username" id="username" placeholder="用户名">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" id="password" placeholder="密码">
+                            </div>
+                        </div>
+
+                        {{#unless login}}
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" id="password2" placeholder="再次输入密码">
+                            </div>
+                        </div>
+                        {{/unless}}
+
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="check icon"></i>
+                                <input id="captcha" type="text" placeholder="验证码">
+                                <img src="/api/captcha" class="captcha"></img>
+                            </div>
+                        </div>
+
+                        <div class="ui fluid large primary submit button">
+                            {{#if login}}登录{{else}}注册{{/if}}
+                        </div>
+
+                        <div class="field" style="text-align: center">
+                            <hr>
+                            <div style="font-size: 0.875em;">
+                                {{#if login}}
+                                没有账号？
+                                <a href="/register">注册</a>
+                                {{else}}
+                                已有账号？
+                                <a href="/login">登录</a>
+                                {{/if}}
+                            </div>
                         </div>
                     </div>
-
-                    <div class="mb-2">
-                        <label for="password" class="form-label">密码</label>
-                        <div class="auth-group">
-                            <input id="password" type="password" class="form-control" placeholder="密码" name="password">
-                        </div>
-                    </div>
-
-                    {{#unless login}}
-                    <div class="mb-2">
-                        <div class="auth-group">
-                            <input id="password2" type="password" class="form-control" placeholder="再次输入密码">
-                        </div>
-                    </div>
-                    {{/unless}}
-
-                    <div class="mb-3">
-                        <label for="captcha" class="form-label">验证码</label>
-                        <div class="auth-group">
-                            <input id="captcha" type="text" class="form-control" placeholder="验证码">
-                            &nbsp;
-                            <img src="/api/captcha" class="captcha"></img>
-                        </div>
-                    </div>
-
-                    <button id="submit" type="button" class="btn btn-primary auth-sumbit">
-                        <span class="spinner-border spinner-border-sm" style="display: none;"></span>
-                        {{#if login}}登录{{else}}注册{{/if}}
-                    </button>
-                    <hr>
-                </div>
-
-                <div style="font-size: 0.875em;">
-                    {{#if login}}
-                    <span>没有账号？</span>
-                    <a href="/register">注册</a>
-                    {{else}}
-                    <span>已有账号？</span>
-                    <a href="/login">登录</a>
-                    {{/if}}
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
+
+        {{> footer }}
     </div>
 </body>
 

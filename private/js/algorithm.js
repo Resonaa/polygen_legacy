@@ -32,6 +32,16 @@ function ajaxSync(type, url, data) {
     }).responseJSON;
 }
 
+function disableButton(path) {
+    $(path).addClass("disabled");
+    $(path).addClass("loading");
+}
+
+function enableButton(path) {
+    $(path).removeClass("disabled");
+    $(path).removeClass("loading");
+}
+
 function userExists(username) {
     return ajaxSync("get", "/api/user/info", { username: username }).status == "success";
 }
