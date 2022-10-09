@@ -5,6 +5,7 @@
     <title>首页 - polygen</title>
 
     {{> prelude }}
+    {{> editor }}
 
     <script src="/js/index.min.js"></script>
 </head>
@@ -15,12 +16,17 @@
     <div class="pusher">
         {{> nav }}
 
-        <div class="ui main text container">
-            <h1 class="ui header">Semantic UI Fixed Template</h1>
-            <p>This is a basic fixed menu template using fixed size containers.</p>
-            <p>A text container is used for the main container, which is useful for single column layouts</p>
+        <div class="ui main stackable grid container">
+            <div class="twelve wide column">
+                <div id="editor"></div>
+            </div>
+            <div class="four wide column">
+                <h4 class="ui top attached block header">本站公告</h4>
+                <div class="ui bottom attached segment">
+                    <div class="ui active centered inline loader"></div>
+                </div>
+            </div>
         </div>
-
 
         {{> footer }}
     </div>

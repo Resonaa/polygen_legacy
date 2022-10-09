@@ -1,7 +1,6 @@
 use rocket::{
     outcome::IntoOutcome,
     request::{self, FromRequest, Request},
-    response::Redirect,
     serde::{Deserialize, Serialize},
 };
 use rocket_dyn_templates::{context, Template};
