@@ -29,3 +29,22 @@
     }
 </script>
 {{/if}}
+
+<script>
+    let new_scroll_position = 0, last_scroll_position;
+
+    $(window).scroll(_ => {
+        last_scroll_position = window.scrollY;
+
+        if (new_scroll_position < last_scroll_position && last_scroll_position > 80) {
+            $(".fixed.menu").removeClass("slideDown");
+            $(".fixed.menu").addClass("slideUp");
+
+        } else if (new_scroll_position > last_scroll_position) {
+            $(".fixed.menu").removeClass("slideUp");
+            $(".fixed.menu").addClass("slideDown");
+        }
+
+        new_scroll_position = last_scroll_position;
+    });
+</script>
