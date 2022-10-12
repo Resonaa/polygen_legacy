@@ -1,2 +1,38 @@
-<script src="https://cdn.jsdelivr.net/npm/vditor@3.8.17/dist/index.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vditor@3.8.17/dist/index.min.css">
+<div id="editor"></div>
+
+<script>
+    const vditor = new Vditor("editor", {
+        height: 160,
+        toolbar: [
+            "upload",
+            "record",
+            "|",
+            "undo",
+            "redo",
+            "|",
+            "fullscreen",
+            {
+                name: "more",
+                toolbar: [
+                    "both",
+                    "edit-mode",
+                    "export",
+                    "outline",
+                    "preview"
+                ],
+            },
+        ],
+        toolbarConfig: {
+            pin: true
+        },
+        resize: {
+            enable: true
+        },
+        tab: "    ",
+        preview: {
+            math: {
+                inlineDigit: true
+            }
+        }
+    });
+</script>

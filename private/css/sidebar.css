@@ -1,11 +1,12 @@
+.content.scrolling {
+    overflow-wrap: anywhere;
+}
+
 #announcement {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
 }
 
 .announcement {
-    background: white;
-    text-align: center;
-    margin-bottom: 8px;
-    padding: 12px 16px;
+    padding: .3em 0;
 }

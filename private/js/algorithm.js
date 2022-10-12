@@ -46,24 +46,10 @@ function userExists(username) {
     return ajaxSync("get", "/api/user/info", { username: username }).status == "success";
 }
 
-function textRenderer(s) {
+async function textRenderer(s) {
     let a = document.createElement("div");
 
-    a.innerHTML = DOMPurify.sanitize(marked.parse(s.trim()).replace(/(\n)*$/, ""), {
-        FORBID_TAGS: ["nav", "article", "header"],
-        KEEP_CONTENT: false,
-        FORBID_ATTR: ["style"]
-    });
-
-    renderMathInElement(a, {
-        delimiters: [
-            { left: "$$", right: "$$", display: true },
-            { left: "$", right: "$", display: false },
-        ],
-        throwOnError: false
-    });
-
-    a.querySelectorAll("pre code").forEach(hljs.highlightElement);
+    await Vditor.preview(a, s.trim(), { anchor: 1 });
 
     addAt(a);
 
@@ -75,7 +61,7 @@ function userLink(username) {
         return username;
     }
 
-    return `<a href="/user/${username}" class="at" style="color: ${randomColor({ seed: username })}">${username}</a>`;
+    return `<a href="/user/${username}">${username}</a>`;
 }
 
 function addAt(e) {

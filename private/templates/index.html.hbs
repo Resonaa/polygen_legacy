@@ -5,9 +5,10 @@
     <title>首页 - polygen</title>
 
     {{> prelude }}
-    {{> editor }}
+    {{> renderer }}
 
     <script src="/js/index.min.js"></script>
+    <link rel="stylesheet" href="/css/sidebar.min.css">
 </head>
 
 <body>
@@ -18,12 +19,20 @@
 
         <div class="ui main stackable grid container">
             <div class="twelve wide column">
-                {{> vditor }}
+                {{#if username}}
+                {{> editor }}
+
+                <br>
+
+                <button class="ui primary button">发布说说</button>
+                {{/if}}
             </div>
             <div class="four wide column">
                 <h4 class="ui top attached block header">本站公告</h4>
                 <div class="ui bottom attached segment">
-                    <div class="ui active centered inline loader"></div>
+                    <div class="ui active centered inline" id="announcement">
+                        {{> announcement }}
+                    </div>
                 </div>
             </div>
         </div>

@@ -14,7 +14,7 @@ struct Announcement {
 }
 
 #[get("/announcement")]
-async fn list(mut db: Connection<Db>, _user: UserGuard) -> Response {
+async fn list(mut db: Connection<Db>) -> Response {
     success!(sqlx::query_as!(Announcement, "SELECT * FROM announcement")
         .fetch_all(&mut *db)
         .await
@@ -22,7 +22,7 @@ async fn list(mut db: Connection<Db>, _user: UserGuard) -> Response {
 }
 
 #[get("/announcement?<aid>", rank = 2)]
-async fn get(mut db: Connection<Db>, _user: UserGuard, aid: i32) -> Response {
+async fn get(mut db: Connection<Db>, aid: i32) -> Response {
     success!(sqlx::query_as!(
         Announcement,
         "SELECT * FROM announcement WHERE aid = ?",

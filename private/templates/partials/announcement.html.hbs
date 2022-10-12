@@ -1,28 +1,22 @@
 <script id="announcement-template" type="text/template">
-    <a class="no-href" data-bs-toggle="modal" data-bs-target="#modal-${aid}">
-        <article class="announcement">
-            ${title}
-        </article>
-    </a>
+    <a class="announcement no-href" onclick="$('#modal-${aid}').modal('show');">${title}</a>
 
-    <div class="modal fade" id="modal-${aid}">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
+    <div class="ui modal" id="modal-${aid}">
+        <i class="close icon"></i>
         
-            <div class="modal-header">
-                <h4 class="modal-title">
-                    ${title}
-                    <span class="text-muted" style="font-weight: 300;"> #${aid}</span>
-                </h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-        
-            <div class="modal-body" style="text-align: initial;">$${content}</div>
-        
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
-            </div>
-        
+        <div class="header">
+            ${title}
+            <span class="ui grey text" style="font-weight: 300;"> #${aid}</span>
+        </div>
+
+        <div class="scrolling content">
+            $${content}
+        </div>
+
+        <div class="actions">
+            <div class="ui positive right labeled icon button">
+            确认
+            <i class="checkmark icon"></i>
             </div>
         </div>
     </div>
