@@ -1,6 +1,6 @@
 use css_minify::optimizations::{Level, Minifier};
 use minify_html::{minify as minify_html, Cfg};
-use minify_js::minify as minify_js;
+use minify_js::{minify as minify_js, TopLevelMode};
 use std::{error::Error, fs};
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -13,7 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
         let source = fs::read_to_string(dir.path())?;
         let mut out = Vec::new();
-        minify_js(source.into_bytes(), &mut out).unwrap();
+        minify_js(TopLevelMode::Global, source.into_bytes(), &mut out).unwrap();
 
         fs::write(path, out)?;
     }

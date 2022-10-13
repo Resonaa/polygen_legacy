@@ -49,7 +49,9 @@ function userExists(username) {
 async function textRenderer(s) {
     let a = document.createElement("div");
 
-    await Vditor.preview(a, s.trim(), { anchor: 1 });
+    a.innerHTML = await Vditor.md2html(s.trim(), {
+        anchor: 1,
+    });
 
     addAt(a);
 

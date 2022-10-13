@@ -40,57 +40,15 @@
     },
     "query": "DELETE FROM post WHERE pid = ?"
   },
-  "3da13903c55c46df8607357b8aa04b488c783cbba99489fd170e7f632b2ae82f": {
+  "1f127f058b9e7acb3580e32c65448d2e20603c8d84411cdf80da49ae710b21bb": {
     "describe": {
       "columns": [],
       "nullable": [],
       "parameters": {
-        "Right": 4
+        "Right": 3
       }
     },
-    "query": "INSERT INTO post (author, time, content, parent) VALUES (?1, ?2, ?3, ?4)"
-  },
-  "488a8fda5482e77aea08687b4f91239db0f28cb5497817812a5c8fec1277425a": {
-    "describe": {
-      "columns": [
-        {
-          "name": "pid",
-          "ordinal": 0,
-          "type_info": "Int64"
-        },
-        {
-          "name": "author",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "time",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "content",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "parent",
-          "ordinal": 4,
-          "type_info": "Int64"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Right": 1
-      }
-    },
-    "query": "SELECT * FROM post WHERE parent = ?"
+    "query": "INSERT INTO post (author, time, content) VALUES (?1, ?2, ?3)"
   },
   "5ad4fb2c35b6bd4854c7aed9ae1506e588d6fb9abcbd9da2f24491b01844507b": {
     "describe": {
@@ -101,66 +59,6 @@
       }
     },
     "query": "INSERT INTO user (username, password) VALUES (?1, ?2)"
-  },
-  "6e89498323e5bb7024902e67f62b2352a2b6811a0cfbf94b03b995576d211d92": {
-    "describe": {
-      "columns": [
-        {
-          "name": "pid",
-          "ordinal": 0,
-          "type_info": "Int64"
-        }
-      ],
-      "nullable": [
-        false
-      ],
-      "parameters": {
-        "Right": 1
-      }
-    },
-    "query": "SELECT pid FROM post WHERE parent = ?"
-  },
-  "7cbb8aabf77740abf325c14d585472ba6d1f741223362f32aa34cf16dc0ffc41": {
-    "describe": {
-      "columns": [
-        {
-          "name": "pid",
-          "ordinal": 0,
-          "type_info": "Int64"
-        },
-        {
-          "name": "author",
-          "ordinal": 1,
-          "type_info": "Text"
-        },
-        {
-          "name": "time",
-          "ordinal": 2,
-          "type_info": "Text"
-        },
-        {
-          "name": "content",
-          "ordinal": 3,
-          "type_info": "Text"
-        },
-        {
-          "name": "parent",
-          "ordinal": 4,
-          "type_info": "Int64"
-        }
-      ],
-      "nullable": [
-        false,
-        false,
-        false,
-        false,
-        false
-      ],
-      "parameters": {
-        "Right": 2
-      }
-    },
-    "query": "SELECT * FROM post WHERE parent = ?1 ORDER BY pid DESC LIMIT 10 OFFSET ?2"
   },
   "80c2c898bae4c85495cff2240ce46671def64ca5941e3f7ceca70af072f45a29": {
     "describe": {
@@ -179,6 +77,42 @@
       }
     },
     "query": "SELECT uid FROM user WHERE username = ?1 AND password = ?2"
+  },
+  "82fa4d073044bcc65985056b281a97b78e74cd553e4de8e48001b082ee75f8f0": {
+    "describe": {
+      "columns": [
+        {
+          "name": "pid",
+          "ordinal": 0,
+          "type_info": "Int64"
+        },
+        {
+          "name": "author",
+          "ordinal": 1,
+          "type_info": "Text"
+        },
+        {
+          "name": "time",
+          "ordinal": 2,
+          "type_info": "Text"
+        },
+        {
+          "name": "content",
+          "ordinal": 3,
+          "type_info": "Text"
+        }
+      ],
+      "nullable": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "parameters": {
+        "Right": 1
+      }
+    },
+    "query": "SELECT * FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?"
   },
   "b88322453e0f69a503e27e254cc8e734e9539f309f414ea758dd1c1ed879735a": {
     "describe": {
@@ -202,15 +136,9 @@
           "name": "content",
           "ordinal": 3,
           "type_info": "Text"
-        },
-        {
-          "name": "parent",
-          "ordinal": 4,
-          "type_info": "Int64"
         }
       ],
       "nullable": [
-        false,
         false,
         false,
         false,

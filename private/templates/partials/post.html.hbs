@@ -1,35 +1,32 @@
 <script id="post-template" type="text/template">
-    <article class="polygen-item post {@if comment}comment{@/if}">
-        <header class="post-header">
-            $${author}
-
-            <time data-bs-toggle="tooltip" title="${realTime}">${deltaTime}</time>
-            ${commentAmount}评论
-
-            <div class="post-toolbar dropdown">
-                <i class="far fa-ellipsis-h dropdown-toggle no-href" data-bs-toggle="dropdown"></i>
-
-                <ul class="dropdown-menu shadow">
-                    <li><a class="dropdown-item edit-post no-href">
-                        <i class="far fa-edit fa-fw"></i>
-                        编辑
-                    </a></li>
-                    <li><a class="dropdown-item text-danger delete-post no-href">
-                        <i class="far fa-trash-alt fa-fw"></i>
-                        删除
-                    </a></li>
-                </ul>
+    <div class="event">
+        <div class="label">
+            <img src="/img/defaultAvatar.jpg">
+        </div>
+        <div class="content">
+            <div class="summary">
+                <a class="user">$${author}</a>
+                发布了说说
+                <div class="date" title="${realTime}">${deltaTime}</div>
             </div>
-        </header>
 
-        {@if comment}
-        <a href="/post/${pid}" style="color: unset;">
-            <object class="post-content">$${content}</object>
-        </a>
-        {@else}
-        <object class="post-content" style="max-height: none; overflow-y: hidden;">
-            $${content}
-        </object>
-        {@/if}
-    </article>
+            <div class="extra text">
+                {@if home}
+                <a href="/post/${pid}" style="color: unset;">
+                    <div class="post-content">$${content}</div>
+                </a>
+                {@else}
+                <div class="post-content" style="max-height: none; overflow-y: hidden;">
+                    $${content}
+                </div>
+                {@/if}
+            </div>
+
+            <div class="meta">
+                <a class="comment">
+                <i class="comment icon"></i>${commentAmount}评论
+                </a>
+            </div>
+        </div>
+    </div>
 </script>

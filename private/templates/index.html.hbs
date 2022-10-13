@@ -9,6 +9,7 @@
 
     <script src="/js/index.min.js"></script>
     <link rel="stylesheet" href="/css/sidebar.min.css">
+    <link rel="stylesheet" href="/css/post.min.css">
 </head>
 
 <body>
@@ -24,8 +25,14 @@
 
                 <br>
 
-                <button class="ui primary button">发布说说</button>
+                <div class="ui labeled primary icon button">
+                    <i class="icon edit"></i> 发布说说
+                </div>
                 {{/if}}
+
+                <div class="ui large feed">
+                    {{> post }}
+                </div>
             </div>
             <div class="four wide column">
                 <h4 class="ui top attached block header">本站公告</h4>

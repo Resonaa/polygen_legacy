@@ -16,42 +16,26 @@ struct Post {
     author: String,
     time: String,
     content: String,
-    parent: i64,
 }
 
-#[get("/post?<parent>&<page>")]
-async fn list(mut db: Connection<Db>, _user: UserGuard, parent: i64, page: usize) -> Response {
-    if !(1..usize::max_value() / 10).contains(&page) {
-        return error!("数据范围错误");
-    }
+#[get("/post?<page>")]
+async fn list(mut db: Connection<Db>, page: i32) -> Response {
+    let offset = (page - 1) * 10;
 
-    let mut ans = sqlx::query_as!(Post, "SELECT * FROM post WHERE parent = ?", parent)
-        .fetch_all(&mut *db)
-        .await
-        .conv()?;
+    let ans = sqlx::query_as!(
+        Post,
+        "SELECT * FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?",
+        offset
+    )
+    .fetch_all(&mut *db)
+    .await
+    .conv()?;
 
-    let mut q: Vec<_> = ans.iter().map(|x| x.pid).collect();
-
-    while !q.is_empty() {
-        let front = q.pop().conv()?;
-
-        let mut res = sqlx::query_as!(Post, "SELECT * FROM post WHERE parent = ?", front)
-            .fetch_all(&mut *db)
-            .await
-            .conv()?;
-
-        q.append(&mut res.iter().map(|x| x.pid).collect());
-
-        ans.append(&mut res);
-    }
-
-    ans.sort_unstable_by_key(|x| -x.pid);
-
-    success!(&ans[ans.len().min((page - 1) * 10)..ans.len().min(page * 10)])
+    success!(ans)
 }
 
 #[get("/post?<pid>", rank = 2)]
-async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Response {
+async fn get(mut db: Connection<Db>, pid: i64) -> Response {
     success!(
         sqlx::query_as!(Post, "SELECT * FROM post WHERE pid = ?", pid)
             .fetch_one(&mut *db)
@@ -60,20 +44,14 @@ async fn get(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Response {
     )
 }
 
-#[derive(Deserialize)]
-#[serde(crate = "rocket::serde")]
-struct CreatePost {
-    content: String,
-    parent: i64,
-}
-#[post("/post", data = "<create_post>")]
+#[post("/post", data = "<content>")]
 async fn create(
     mut db: Connection<Db>,
     _user: UserGuard,
     jar: &CookieJar<'_>,
-    create_post: Json<CreatePost>,
+    content: Json<String>,
 ) -> Response {
-    let content = create_post.content.trim();
+    let content = content.into_inner();
 
     if !(1..=100000).contains(&content.chars().count()) {
         return error!("说说长度应为 1~100000 个字符");
@@ -84,11 +62,10 @@ async fn create(
     let time = Local::now().format("%F %T").to_string();
 
     sqlx::query!(
-        "INSERT INTO post (author, time, content, parent) VALUES (?1, ?2, ?3, ?4)",
+        "INSERT INTO post (author, time, content) VALUES (?1, ?2, ?3)",
         author,
         time,
-        content,
-        create_post.parent
+        content
     )
     .execute(&mut *db)
     .await
@@ -136,31 +113,31 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Res
     success!("删除成功")
 }
 
-#[get("/post/commentamount?<pid>")]
-async fn comment_amount(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Response {
-    let mut q = vec![pid];
+// #[get("/post/commentamount?<pid>")]
+// async fn comment_amount(mut db: Connection<Db>, _user: UserGuard, pid: i64) -> Response {
+//     let mut q = vec![pid];
 
-    let mut cnt = 0;
+//     let mut cnt = 0;
 
-    while !q.is_empty() {
-        let front = q.pop().conv()?;
+//     while !q.is_empty() {
+//         let front = q.pop().conv()?;
 
-        let mut res: Vec<_> = sqlx::query!("SELECT pid FROM post WHERE parent = ?", front)
-            .fetch_all(&mut *db)
-            .await
-            .conv()?
-            .iter()
-            .map(|x| x.pid)
-            .collect();
+//         let mut res: Vec<_> = sqlx::query!("SELECT pid FROM post WHERE parent = ?", front)
+//             .fetch_all(&mut *db)
+//             .await
+//             .conv()?
+//             .iter()
+//             .map(|x| x.pid)
+//             .collect();
 
-        cnt += res.len();
+//         cnt += res.len();
 
-        q.append(&mut res);
-    }
+//         q.append(&mut res);
+//     }
 
-    success!(cnt)
-}
+//     success!(cnt)
+// }
 
 pub fn routes() -> Vec<rocket::Route> {
-    routes![list, get, create, update, delete, comment_amount]
+    routes![list, get, create, update, delete]
 }

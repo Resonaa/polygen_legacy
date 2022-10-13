@@ -1,45 +1,13 @@
-.post {
-    padding: unset;
-}
-
-.post-header {
-    padding: 10px 15px;
-    line-height: 1.2;
-    font-size: 14px;
-    color: #999;
-}
-
 .post-content {
     max-height: 200px;
     display: block;
     overflow-y: auto;
-    background: white;
-    padding: 15px;
 }
 
-p {
-    margin-bottom: auto;
+.extra.text {
+    max-width: none !important;
 }
 
-#loader {
-    text-align: center;
-    user-select: none;
-    -webkit-user-select: none;
-}
-
-.post-toolbar {
-    float: right;
-    font-weight: bold;
-}
-
-.post-header>a {
-    color: #999;
-}
-
-.post-toolbar .dropdown-toggle::after {
-    display: none;
-}
-
-.post-toolbar .dropdown-menu {
-    min-width: unset;
+.event>.content {
+    overflow-x: overlay;
 }

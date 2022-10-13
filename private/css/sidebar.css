@@ -1,4 +1,4 @@
-.content.scrolling {
+.modal>.content {
     overflow-wrap: anywhere;
 }
 

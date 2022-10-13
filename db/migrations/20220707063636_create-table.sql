@@ -14,6 +14,5 @@ CREATE TABLE post (
     pid INTEGER PRIMARY KEY NOT NULL,
     author TEXT NOT NULL,
     time TEXT NOT NULL,
-    content TEXT NOT NULL,
-    parent INTEGER NOT NULL
+    content TEXT NOT NULL
 );
