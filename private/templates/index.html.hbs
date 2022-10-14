@@ -20,26 +20,38 @@
 
         <div class="ui main stackable grid container">
             <div class="twelve wide column">
-                {{#if username}}
-                {{> editor }}
+                <div class="ui large feed animated list">
+                    {{#if username}}
+                    <div class="event">
+                        <a class="label" href="/user/{{ username }}">
+                            <img src="/usercontent/avatar/{{ username }}.jpg">
+                        </a>
+                        <div class="content">
+                            <div class="summary">
+                                <a href="/user/{{ username }}">{{ username }}</a>
+                            </div>
 
-                <br>
+                            <div class="extra text">
+                                {{> editor }}
 
-                <div class="ui labeled primary icon button">
-                    <i class="icon edit"></i> 发布说说
-                </div>
-                {{/if}}
+                                <br>
 
-                <div class="ui large feed">
+                                <div class="ui labeled primary icon button">
+                                    <i class="icon edit"></i> 发布说说
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{/if}}
+
                     {{> post }}
                 </div>
             </div>
             <div class="four wide column">
                 <h4 class="ui top attached block header">本站公告</h4>
-                <div class="ui bottom attached segment">
-                    <div class="ui active centered inline" id="announcement">
-                        {{> announcement }}
-                    </div>
+                <div class="ui bottom attached segment" id="announcement">
+                    {{> announcement }}
                 </div>
             </div>
         </div>

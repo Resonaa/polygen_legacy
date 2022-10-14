@@ -1,8 +1,8 @@
-use rocket::{http::Status, Catcher, Request};
+use rocket::{http::Status, response::Redirect, Request};
 use rocket_dyn_templates::{context, Template};
 
 #[catch(default)]
-fn default(status: Status, _req: &Request) -> Template {
+pub fn default(status: Status, _req: &Request) -> Template {
     Template::render(
         "error.min",
         context! {
@@ -11,6 +11,7 @@ fn default(status: Status, _req: &Request) -> Template {
     )
 }
 
-pub fn catchers() -> Vec<Catcher> {
-    catchers![default]
+#[catch(404)]
+pub fn avatar_not_found() -> Redirect {
+    Redirect::to(uri!("/img/defaultAvatar.jpg"))
 }

@@ -11,20 +11,22 @@ use rocket_db_pools::Connection;
 
 #[derive(Serialize, Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct Post {
-    pid: i64,
+struct Comment {
+    cid: i64,
     author: String,
     time: String,
     content: String,
+    pid: i64,
 }
 
-#[get("/post?<page>")]
-async fn list(mut db: Connection<Db>, page: i32) -> Response {
+#[get("/comment?<pid>&<page>")]
+async fn list(mut db: Connection<Db>, pid: i64, page: i32) -> Response {
     let offset = (page - 1) * 10;
 
     let ans = sqlx::query_as!(
-        Post,
-        "SELECT * FROM post ORDER BY pid DESC LIMIT 10 OFFSET ?",
+        Comment,
+        "SELECT * FROM comment WHERE pid = ?1 ORDER BY cid DESC LIMIT 10 OFFSET ?2",
+        pid,
         offset
     )
     .fetch_all(&mut *db)
@@ -34,27 +36,36 @@ async fn list(mut db: Connection<Db>, page: i32) -> Response {
     success!(ans)
 }
 
-#[get("/post?<pid>", rank = 2)]
-async fn get(mut db: Connection<Db>, pid: i64) -> Response {
+#[get("/comment?<cid>", rank = 2)]
+async fn get(mut db: Connection<Db>, cid: i64) -> Response {
     success!(
-        sqlx::query_as!(Post, "SELECT * FROM post WHERE pid = ?", pid)
+        sqlx::query_as!(Comment, "SELECT * FROM comment WHERE cid = ?", cid)
             .fetch_one(&mut *db)
             .await
             .conv()?
     )
 }
 
-#[post("/post", data = "<content>")]
+#[derive(Deserialize)]
+#[serde(crate = "rocket::serde")]
+struct CreateComment {
+    pid: i64,
+    content: String,
+}
+
+#[post("/comment", data = "<create_comment>")]
 async fn create(
     mut db: Connection<Db>,
     _user: UserGuard,
     jar: &CookieJar<'_>,
-    content: Json<String>,
+    create_comment: Json<CreateComment>,
 ) -> Response {
-    let content = content.into_inner();
+    let create_comment = create_comment.into_inner();
+    let content = create_comment.content;
+    let pid = create_comment.pid;
 
     if !(1..=100000).contains(&content.chars().count()) {
-        return error!("说说长度应为 1~100000 个字符");
+        return error!("评论长度应为 1~100000 个字符");
     }
 
     let author = jar.get_private("username").conv()?.value().to_string();
@@ -62,10 +73,11 @@ async fn create(
     let time = Local::now().format("%F %T").to_string();
 
     sqlx::query!(
-        "INSERT INTO post (author, time, content) VALUES (?1, ?2, ?3)",
+        "INSERT INTO comment (author, time, content, pid) VALUES (?1, ?2, ?3, ?4)",
         author,
         time,
-        content
+        content,
+        pid
     )
     .execute(&mut *db)
     .await
@@ -76,23 +88,23 @@ async fn create(
 
 #[derive(Deserialize)]
 #[serde(crate = "rocket::serde")]
-struct UpdatePost {
-    pid: i64,
+struct UpdateComment {
+    cid: i64,
     content: String,
 }
 
-#[put("/post", data = "<update_post>")]
+#[put("/comment", data = "<update_comment>")]
 async fn update(
     mut db: Connection<Db>,
     _user: UserGuard,
-    update_post: Json<UpdatePost>,
+    update_comment: Json<UpdateComment>,
 ) -> Response {
-    let content = update_post.content.trim();
+    let content = update_comment.content.trim();
 
     sqlx::query!(
-        "UPDATE post SET content = ?1 WHERE pid = ?2",
+        "UPDATE comment SET content = ?1 WHERE cid = ?2",
         content,
-        update_post.pid
+        update_comment.cid
     )
     .execute(&mut *db)
     .await
@@ -101,11 +113,11 @@ async fn update(
     success!("更新成功")
 }
 
-#[delete("/post", data = "<pid>")]
-async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Response {
-    let pid = pid.into_inner();
+#[delete("/comment", data = "<cid>")]
+async fn delete(mut db: Connection<Db>, _user: UserGuard, cid: Json<i64>) -> Response {
+    let cid = cid.into_inner();
 
-    sqlx::query!("DELETE FROM post WHERE pid = ?", pid)
+    sqlx::query!("DELETE FROM comment WHERE cid = ?", cid)
         .execute(&mut *db)
         .await
         .conv()?;
@@ -113,15 +125,6 @@ async fn delete(mut db: Connection<Db>, _user: UserGuard, pid: Json<i32>) -> Res
     success!("删除成功")
 }
 
-#[get("/post/commentamount?<pid>")]
-async fn comment_amount(mut db: Connection<Db>, pid: i64) -> Response {
-    success!(sqlx::query!("SELECT cid FROM comment WHERE pid = ?", pid)
-        .fetch_all(&mut *db)
-        .await
-        .conv()?
-        .len())
-}
-
 pub fn routes() -> Vec<rocket::Route> {
-    routes![list, get, create, update, delete, comment_amount]
+    routes![list, get, create, update, delete]
 }

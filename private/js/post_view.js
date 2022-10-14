@@ -1,17 +1,22 @@
-$(() => {
+$(async () => {
     $(".ui.sidebar").sidebar("attach events", ".toc.item");
 
-    ajax("get", "/api/announcement", undefined, () => $("#announcement").html("数据库错误"), async (dat) => {
-        const announcementTemplate = juicer.compile($("#announcement-template").html());
+    const pid = Number(window.location.href.match(/\d+$/)[0]);
+    const postTemplate = juicer.compile($("#post-template").html());
+    const commentTemplate = juicer.compile($("#comment-template").html());
 
-        for (let i of dat) {
-            $("#announcement").append(announcementTemplate.render({
-                aid: i.aid,
-                title: i.title,
-                content: await renderText(i.content)
-            }));
-        }
-    });
+    const dat = ajaxSync("get", `/api/post?pid=${pid}`, undefined).msg;
+    $(".ui.large.feed").html(postTemplate.render({
+        realTime: dat.time,
+        deltaTime: deltaTime(dat.time),
+        commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: dat.pid }).msg,
+        author: dat.author,
+        content: await renderText(dat.content),
+        home: false,
+    }));
+    $("#author").html(userLink(dat.author));
+    $("#time").html(dat.time);
+    document.title = `${dat.author}的说说 - polygen`;
 
     $(".labeled.primary.button").click(() => {
         disableButton(".labeled.primary.button");
@@ -23,7 +28,7 @@ $(() => {
                 enableButton(".labeled.primary.button");
             }
             else {
-                ajax("post", "/api/post", content, msg => {
+                ajax("post", "/api/comment", { content: content, pid: pid }, msg => {
                     toast("error", "发送失败", msg);
                     enableButton(".labeled.primary.button");
                 }, () => {
@@ -35,37 +40,38 @@ $(() => {
     });
 
     let page = 1;
-    const postTemplate = juicer.compile($("#post-template").html());
     let noMore = false;
 
-    function addPost() {
+    function addComment() {
         if (noMore) {
             return;
         }
 
-        ajax("get", `/api/post?`, { page: page }, undefined, async (dat) => {
+        ajax("get", `/api/comment?`, { pid: pid, page: page }, undefined, async (dat) => {
             for (let i of dat) {
-                $(".feed").append(postTemplate.render({
+                $(".comments").append(commentTemplate.render({
                     realTime: i.time,
                     deltaTime: deltaTime(i.time),
-                    pid: i.pid,
-                    commentAmount: ajaxSync("get", "/api/post/commentamount?", { pid: i.pid }).msg,
                     content: await renderText(i.content),
                     author: i.author,
-                    home: true,
                 }));
+
+                $(".reply").last().click(() => {
+                    vditor.setValue(`@${i.author} ${vditor.getValue()}`);
+                    vditor.focus()
+                });
             }
 
             if (dat.length < 10) {
                 noMore = true;
             }
 
-            Vditor.mathRender($(".feed")[0]);
-            Vditor.highlightRender($(".feed")[0]);
+            Vditor.mathRender($(".comments")[0]);
+            Vditor.highlightRender($(".comments")[0]);
         });
     }
 
-    addPost();
+    addComment();
 
     $(window).scroll(() => {
         const scrollTop = $(this).scrollTop();
@@ -74,7 +80,7 @@ $(() => {
 
         if (scrollHeight - scrollTop - windowHeight <= 10) {
             page++;
-            addPost();
+            addComment();
         }
     });
 });

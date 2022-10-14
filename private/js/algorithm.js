@@ -46,7 +46,7 @@ function userExists(username) {
     return ajaxSync("get", "/api/user/info", { username: username }).status == "success";
 }
 
-async function textRenderer(s) {
+async function renderText(s) {
     let a = document.createElement("div");
 
     a.innerHTML = await Vditor.md2html(s.trim(), {
@@ -73,7 +73,7 @@ function addAt(e) {
 }
 
 function deltaTime(s) {
-    let interval = new Date().getTime() - new Date(s).getTime();
+    const interval = new Date().getTime() - new Date(s).getTime();
 
     let years = Math.floor(interval / (365 * 24 * 3600 * 1000));
     if (years == 0) {
@@ -100,4 +100,12 @@ function deltaTime(s) {
         return months + "月前";
     }
     return years + "年前";
+}
+
+function toast(cls, title, msg) {
+    $("body").toast({
+        class: cls,
+        title: title,
+        message: msg
+    });
 }

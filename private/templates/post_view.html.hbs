@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <title>说说 - polygen</title>
+
+    {{> prelude }}
+    {{> renderer }}
+
+    <script src="/js/post_view.min.js"></script>
+    <link rel="stylesheet" href="/css/post.min.css">
+</head>
+
+<body>
+    {{> sidebar-nav }}
+
+    <div class="pusher">
+        {{> nav }}
+
+        <div class="ui main stackable grid container">
+            <div class="twelve wide column">
+                <div class="ui large feed">
+                    {{> post }}
+                </div>
+
+                <div class="ui large minimal comments animated list">
+                    {{#if username}}
+                    <div class="comment">
+                        <a class="avatar" href="/user/{{ username }}">
+                            <img src="/usercontent/avatar/{{ username }}.jpg">
+                        </a>
+                        <div class="content">
+                            <a href="/user/{{ username }}">{{ username }}</a>
+                            <div>
+                                {{> editor }}
+
+                                <br>
+
+                                <div class="ui labeled primary icon button">
+                                    <i class="icon edit"></i> 发布评论
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{/if}}
+                    {{> comment }}
+                </div>
+            </div>
+            <div class="four wide column">
+                <div class="ui segment">
+                    <div class="ui list">
+                        <div class="item">
+                            <strong>楼主</strong>
+                            <div id="author"></div>
+                        </div>
+                        <div class="item">
+                            <strong>发布时间</strong>
+                            <div id="time"></div>
+                        </div>
+                    </div>
+                    {{#if username}}
+                    <div class="ui primary tiny button" onclick="vditor.focus()">回复</div>
+                    {{else}}
+                    <style>
+                        .actions {
+                            display: none !important;
+                        }
+                    </style>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+
+        {{> footer }}
+    </div>
+</body>
+
+</html>

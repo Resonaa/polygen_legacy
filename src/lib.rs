@@ -10,6 +10,7 @@ pub mod game;
 pub mod post;
 mod response;
 pub mod session;
+pub mod index;
 
 use regex::Regex;
 pub use response::Response;

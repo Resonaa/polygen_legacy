@@ -1,12 +1,11 @@
 <script id="post-template" type="text/template">
-    <div class="event">
-        <div class="label">
-            <img src="/img/defaultAvatar.jpg">
-        </div>
+    <div class="item event">
+        <a class="label" href="/user/${author}">
+            <img src="/usercontent/avatar/${author}.jpg">
+        </a>
         <div class="content">
             <div class="summary">
-                <a class="user">$${author}</a>
-                发布了说说
+                <a href="/user/${author}">${author}</a>
                 <div class="date" title="${realTime}">${deltaTime}</div>
             </div>
 

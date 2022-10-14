@@ -1,0 +1,19 @@
+<script id="comment-template" type="text/template">
+    <div class="item comment">
+        <a class="avatar" href="/user/${author}">
+            <img src="/usercontent/avatar/${author}.jpg">
+        </a>
+        <div class="content">
+            <a href="/user/${author}">${author}</a>
+            <div class="metadata">
+                <div class="date" title="${realTime}">${deltaTime}</div>
+            </div>
+            <div class="post-content">
+                $${content}
+            </div>
+            <div class="actions">
+                <a class="reply">回复</a>
+            </div>
+        </div>
+    </div>
+</script>

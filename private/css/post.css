@@ -8,6 +8,22 @@
     max-width: none !important;
 }
 
+.comments {
+    max-width: none !important;
+}
+
 .event>.content {
     overflow-x: overlay;
+}
+
+.comment {
+    overflow-wrap: anywhere;
+}
+
+.four .ui.list>.item {
+    padding: .4em 0;
+}
+
+.four .ui.list>.item>div {
+    float: right;
 }

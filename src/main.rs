@@ -2,7 +2,7 @@
 extern crate rocket;
 
 use dotenv::dotenv;
-use polygen::{api, db, error, game, post, session};
+use polygen::{api, db, error, game, index, post, session};
 use rocket::{fs::FileServer, tokio};
 use rocket_dyn_templates::Template;
 use std::fs;
@@ -31,8 +31,10 @@ async fn rocket() -> _ {
         .attach(db::stage())
         .mount("/", FileServer::from("public/"))
         .mount("/", session::routes())
+        .mount("/", index::routes())
         .mount("/post", post::routes())
         .mount("/api", api::routes())
         .mount("/game", game::routes())
-        .register("/", error::catchers())
+        .register("/", catchers![error::default])
+        .register("/usercontent/avatar/", catchers![error::avatar_not_found])
 }

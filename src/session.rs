@@ -3,7 +3,6 @@ use rocket::{
     request::{self, FromRequest, Request},
     serde::{Deserialize, Serialize},
 };
-use rocket_dyn_templates::{context, Template};
 
 mod login;
 mod register;
@@ -36,31 +35,6 @@ impl<'r> FromRequest<'r> for UserGuard {
     }
 }
 
-#[get("/")]
-fn index(user: UserGuard) -> Template {
-    Template::render(
-        "index.min",
-        context! {
-            username: user.username,
-            home: true,
-        },
-    )
-}
-
-#[get("/", rank = 2)]
-fn no_auth_index() -> Template {
-    Template::render(
-        "index.min",
-        context! {
-            home: true
-        },
-    )
-}
 pub fn routes() -> Vec<rocket::Route> {
-    [
-        routes![index, no_auth_index],
-        login::routes(),
-        register::routes(),
-    ]
-    .concat()
+    [login::routes(), register::routes()].concat()
 }
