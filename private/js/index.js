@@ -53,6 +53,8 @@ $(() => {
                     content: await renderText(i.content),
                     author: i.author,
                     home: true,
+                    viewCount: 0,
+                    likes: 0
                 }));
             }
 

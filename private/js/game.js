@@ -1,7 +1,9 @@
 $(() => {
-    let roomTemplate = juicer.compile($("#room-template").html());
+    $(".ui.sidebar").sidebar("attach events", ".toc.item");
 
-    let translation = {
+    const roomTemplate = juicer.compile($("#room-template").html());
+
+    const translation = {
         Quadrilateral: "四边形", Hexagon: "六边形", Random: "随机地图",
     };
 
@@ -15,7 +17,7 @@ $(() => {
 
         players = `${playerCnt}玩家: ` + players;
 
-        $("#ongoing-games").append(roomTemplate.render({
+        $("tbody").append(roomTemplate.render({
             status: room.status.toLowerCase(),
             mode: translation[room.map.config.mode],
             map: translation[room.map.config.tp],
@@ -25,8 +27,6 @@ $(() => {
     }
 
     ajax("get", "/api/room", undefined, undefined, rooms => {
-        $("#ongoing-games").html("");
-
         for (let room of rooms) {
             addRoom(room);
         }

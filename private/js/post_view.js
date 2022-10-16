@@ -1,6 +1,8 @@
 $(async () => {
     $(".ui.sidebar").sidebar("attach events", ".toc.item");
 
+    $(".ui.sticky").sticky({ context: ".four" });
+
     const pid = Number(window.location.href.match(/\d+$/)[0]);
     const postTemplate = juicer.compile($("#post-template").html());
     const commentTemplate = juicer.compile($("#comment-template").html());
@@ -13,6 +15,8 @@ $(async () => {
         author: dat.author,
         content: await renderText(dat.content),
         home: false,
+        viewCount: 0,
+        likes: 0
     }));
     $("#author").html(userLink(dat.author));
     $("#time").html(dat.time);

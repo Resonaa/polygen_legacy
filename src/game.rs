@@ -18,6 +18,11 @@ fn room_list(user: UserGuard) -> Template {
     Template::render("game.min", context! { username: user.username, game: true })
 }
 
+#[get("/", rank = 2)]
+fn no_auth_room_list() -> Template {
+    Template::render("game.min", context! { game: true })
+}
+
 #[get("/<rid>")]
 async fn game_core(user: UserGuard, rid: String) -> Template {
     remove_player(&user.username).await;
@@ -43,5 +48,5 @@ async fn game_core(user: UserGuard, rid: String) -> Template {
 }
 
 pub fn routes() -> Vec<rocket::Route> {
-    routes![room_list, game_core]
+    routes![room_list, no_auth_room_list, game_core]
 }

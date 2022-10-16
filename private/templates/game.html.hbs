@@ -5,39 +5,41 @@
     <title>大厅 - polygen</title>
 
     {{> prelude }}
-
     {{> renderer }}
 
-    <link href="/css/game.min.css" rel="stylesheet">
     <script src="/js/game.min.js"></script>
-
-    <script src="/js/sidebar.min.js"></script>
-    <link href="/css/sidebar.min.css" rel="stylesheet">
 </head>
 
-<body class="container-fluid">
-    {{> nav }}
+<body>
+    {{> sidebar-nav }}
 
-    <div class="row">
-        {{> sleft }}
+    <div class="pusher">
+        {{> nav }}
 
-        <div id="main-part" class="col-sm-7">
-            <div class="polygen-item">
-                <h5 class="module">加入游戏</h5>
-
-                {{> room }}
-
-                <div id="ongoing-games">
-                    <div class="spinner-border"></div>
-                </div>
+        <div class="ui main stackable grid container">
+            <div class="eleven wide column">
+                <h3>加入房间</h3>
+                <table class="ui celled selectable unstackable table">
+                    <thead>
+                        <tr>
+                            <th>名称</th>
+                            <th>模式</th>
+                            <th>地图</th>
+                            <th>玩家</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{> room }}
+                    </tbody>
+                </table>
             </div>
 
-            <div id="create-game" class="polygen-item">
-                <h5 class="module">创建游戏</h5>
+            <div class="five wide column">
+                <h3>创建房间</h3>
             </div>
         </div>
 
-        {{> sright }}
+        {{> footer }}
     </div>
 </body>
 

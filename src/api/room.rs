@@ -1,8 +1,8 @@
-use crate::{game::core::ROOMS, session::UserGuard, success, Response};
+use crate::{game::core::ROOMS, success, Response};
 use rocket::serde::json::json;
 
 #[get("/room")]
-async fn room_list(_user: UserGuard) -> Response {
+async fn room_list() -> Response {
     success!(*ROOMS.lock().await)
 }
 

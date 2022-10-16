@@ -1,19 +1,8 @@
 <script id="room-template" type="text/template">
-    <article class="room">
-        <a href="/game/${rid}" class="room-header header-${status}">
-            ${mode} - ${map}
-            
-            <span class="badge bg-${status}">
-                {@if status == "ongoing"}
-                游戏中
-                {@else}
-                准备中
-                {@/if}
-            </span>
-        </a>
-
-        <div class="room-content">
-            $${players}
-        </div>
-    </article>
+    <tr onclick="{{#if username}}window.open('/game/${rid}'){{else}}toast('error', '请先登录'){{/if}}">
+        <td class='left marked {@if status == "ongoing"} blue {@else} green {@/if}' data-label="名称">${rid}</td>
+        <td data-label="模式">${mode}</td>
+        <td data-label="地图">${map}</td>
+        <td data-label="玩家">$${players}</td>
+    </tr>
 </script>
