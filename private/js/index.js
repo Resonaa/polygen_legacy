@@ -54,7 +54,8 @@ $(() => {
                     author: i.author,
                     home: true,
                     viewCount: 0,
-                    likes: 0
+                    likes: 0,
+                    shadow: true
                 }));
             }
 

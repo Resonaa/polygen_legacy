@@ -1,5 +1,5 @@
 <script id="post-template" type="text/template">
-    <div class="item event">
+    <div class="event {@if shadow}grow-shadow{@/if}">
         <a class="label" href="/user/${author}">
             <img src="/usercontent/avatar/${author}.jpg">
         </a>
@@ -11,11 +11,13 @@
 
             <div class="extra text">
                 {@if home}
-                <a href="/post/${pid}" style="color: unset;">
-                    <div class="post-content">$${content}</div>
+                <a href="/post/${pid}">
+                    <object>
+                        <div class="post-content">$${content}</div>
+                    </object>
                 </a>
                 {@else}
-                <div class="post-content" style="max-height: none; overflow-y: hidden;">
+                <div class="post-content" style="max-height: none;">
                     $${content}
                 </div>
                 {@/if}

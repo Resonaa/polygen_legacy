@@ -9,15 +9,17 @@
     {{> renderer }}
 
     <link href="/css/game_core.min.css" rel="stylesheet">
+    <script src="https://down.52pojie.cn/.fancyindex/js/phaser.min.js"></script>
+    <script src="https://down.52pojie.cn/.fancyindex/js/catch-the-cat.js"></script>
     <script src="/js/game_core.min.js"></script>
 
     <script>
-        let username = "{{ username }}", identity = "{{ identity }}";
+        const username = "{{ username }}", identity = "{{ identity }}";
     </script>
 </head>
 
-<body class="container-fluid">
-    <h1>游戏</h1>
+<body>
+    <div id="catch-the-cat" style="display: flex; justify-content: center;"></div>
 </body>
 
 </html>
