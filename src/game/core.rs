@@ -63,6 +63,22 @@ async fn identify(value: Value) -> Result<String, ()> {
     Err(())
 }
 
+macro_rules! events {
+    ($( [$id: expr, $name: expr, $dat: expr] ),*) => {
+        {
+            #[allow(unused_mut)] // this is a feature
+
+            let mut tmp = Vec::new();
+            $(
+                if let Ok(res) = Event::new($id, $name, $dat) {
+                    tmp.push(res);
+                }
+            )*
+            tmp
+        }
+    };
+}
+
 pub async fn game() {
     let _socket = Socket::new("0.0.0.0:7878", |event| async move {
         info!("{:?}", event);
@@ -70,14 +86,17 @@ pub async fn game() {
         if event.name == EventName::Identify {
             if let Ok(username) = identify(event.dat).await {
                 PLAYERS.lock().await.insert(event.id, username);
-                return Event::new(event.id, EventName::Message, "身份验证成功").ok();
+                return events![
+                    [0, EventName::ClearExisted, event.id], // 清除旧连接
+                    [event.id, EventName::Message, "身份验证成功"]
+                ];
             } else {
-                return Event::new(event.id, EventName::Abort, ()).ok();
+                return events![[event.id, EventName::Abort, ()]];
             }
         }
 
         let username = match PLAYERS.lock().await.get(&event.id) {
-            None => return Event::new(event.id, EventName::Abort, ()).ok(),
+            None => return events![[event.id, EventName::Abort, ()]],
             Some(username) => username,
         }
         .to_string();
@@ -86,15 +105,10 @@ pub async fn game() {
             EventName::Close => {
                 remove_player(&username).await;
                 PLAYERS.lock().await.remove(&event.id);
-                None
+                events![]
             }
-            EventName::Message => Event::new(
-                event.id,
-                EventName::Message,
-                format!("hello, {}!", event.id),
-            )
-            .ok(),
-            _ => None,
+            EventName::Message => events![[0, EventName::WorldMessage, event.dat]],
+            _ => events![],
         }
     })
     .await;

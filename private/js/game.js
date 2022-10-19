@@ -1,5 +1,6 @@
 $(() => {
     $(".ui.sidebar").sidebar("attach events", ".toc.item");
+    $(".selection.dropdown").dropdown();
 
     const roomTemplate = juicer.compile($("#room-template").html());
 
@@ -18,9 +19,9 @@ $(() => {
         players = `${playerCnt}玩家: ` + players;
 
         $("tbody").append(roomTemplate.render({
-            status: room.status.toLowerCase(),
-            mode: translation[room.map.config.mode],
-            map: translation[room.map.config.tp],
+            ongoing: room.ongoing,
+            mode: translation[room.mode],
+            map: translation[room.type],
             players: players.substring(0, players.length - 2),
             rid: room.rid
         }));

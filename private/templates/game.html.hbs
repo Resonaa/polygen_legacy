@@ -17,7 +17,7 @@
         {{> nav }}
 
         <div class="ui main stackable grid container">
-            <div class="eleven wide column">
+            <div class="twelve wide column">
                 <h3>加入房间</h3>
                 <table class="ui celled selectable unstackable table">
                     <thead>
@@ -34,8 +34,40 @@
                 </table>
             </div>
 
-            <div class="five wide column">
+            <div class="four wide column">
                 <h3>创建房间</h3>
+                <div class="ui form">
+                    <div class="field">
+                        <label>名称</label>
+                        <input id="rid" type="text" placeholder="名称">
+                    </div>
+
+                    <div class="field">
+                        <label>模式</label>
+                        <div class="ui selection dropdown" tabindex="0">
+                            <input type="hidden" name="mode" class="noselection" value="0">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">模式</div>
+                            <div class="menu transition hidden" tabindex="-1">
+                                <div class="item" data-value="0">六边形</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label>地图</label>
+                        <div class="ui selection dropdown" tabindex="0">
+                            <input type="hidden" name="map" class="noselection" value="0">
+                            <i class="dropdown icon"></i>
+                            <div class="default text">地图</div>
+                            <div class="menu transition hidden" tabindex="-1">
+                                <div class="item" data-value="0">随机地图</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="ui primary button" type="submit">创建房间</button>
+                </div>
             </div>
         </div>
 

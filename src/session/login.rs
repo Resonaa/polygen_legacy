@@ -24,7 +24,7 @@ async fn post_login(mut db: Connection<Db>, jar: &CookieJar<'_>, login: Json<Log
         return error!("验证码错误");
     }
 
-    let password = sha256::digest(&login.password);
+    let password = sha256::digest(&*login.password);
 
     sqlx::query!(
         "SELECT uid FROM user WHERE username = ?1 AND password = ?2",

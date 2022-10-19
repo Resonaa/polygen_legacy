@@ -1,6 +1,6 @@
 <script id="room-template" type="text/template">
     <tr onclick="{{#if username}}window.open('/game/${rid}'){{else}}toast('error', '请先登录'){{/if}}">
-        <td class='left marked {@if status == "ongoing"} blue {@else} green {@/if}' data-label="名称">${rid}</td>
+        <td class='left marked {@if ongoing} blue {@else} green {@/if}' data-label="名称">${rid}</td>
         <td data-label="模式">${mode}</td>
         <td data-label="地图">${map}</td>
         <td data-label="玩家">$${players}</td>

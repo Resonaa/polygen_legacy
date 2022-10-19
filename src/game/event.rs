@@ -10,6 +10,8 @@ pub enum EventName {
     Abort,
     Message,
     Identify,
+    WorldMessage,
+    ClearExisted
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

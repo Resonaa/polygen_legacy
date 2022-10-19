@@ -20,11 +20,15 @@ impl Default for LandType {
 pub struct Land {
     pub color: i32,
     pub amount: i32,
-    pub tp: LandType,
+    pub r#type: LandType,
 }
 
 impl Land {
-    pub fn new(color: i32, amount: i32, tp: LandType) -> Self {
-        Self { color, amount, tp }
+    pub fn new(color: i32, amount: i32, r#type: LandType) -> Self {
+        Self {
+            color,
+            amount,
+            r#type,
+        }
     }
 }

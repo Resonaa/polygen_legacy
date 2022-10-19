@@ -38,7 +38,7 @@ async fn post_register(
         return error!("密码长度应为 6 ~ 20 位");
     }
 
-    let password = sha256::digest(&register.password);
+    let password = sha256::digest(&*register.password);
     sqlx::query!(
         "INSERT INTO user (username, password) VALUES (?1, ?2)",
         register.username,

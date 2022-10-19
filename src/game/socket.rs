@@ -19,7 +19,7 @@ pub struct Socket {
 }
 
 impl Socket {
-    pub async fn new<T: futures_util::Future<Output = Option<Event>> + Send + Sync + 'static>(
+    pub async fn new<T: futures_util::Future<Output = Vec<Event>> + Send + Sync + 'static>(
         addr: &'static str,
         handler: impl Fn(Event) -> T + Send + Sync + Copy + 'static,
     ) -> Self {
@@ -53,7 +53,7 @@ impl Socket {
     }
 }
 
-async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
+async fn handle_connection<T: futures_util::Future<Output = Vec<Event>>>(
     stream: TcpStream,
     sender: Sender<Event>,
     mut receiver: Receiver<Event>,
@@ -68,12 +68,12 @@ async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
             Some(Ok(msg)) = ws_receiver.next() =>
                 match msg {
                     Message::Text(msg) => if let Ok(event) = Event::from(id, &msg) {
-                        if let Some(response) = handler(event).await {
+                        for response in handler(event).await {
                             sender.send(response)?;
                         }
                     },
                     _ => {
-                        if let Some(response) = handler(Event::new(id, EventName::Close, ())?).await {
+                        for response in handler(Event::new(id, EventName::Close, ())?).await {
                             sender.send(response)?;
                         }
                         break;
@@ -82,14 +82,23 @@ async fn handle_connection<T: futures_util::Future<Output = Option<Event>>>(
             ,
             Ok(msg) = receiver.recv() =>
                 if msg.id == id || msg.id == 0 {
-                    if msg.name == EventName::Abort {
-                        if let Some(response) = handler(Event::new(id, EventName::Close, ())?).await {
-                            ws_sender.send(Message::Text(json::to_string(&response)?)).await?;
+                    match msg.name {
+                        EventName::Abort => {
+                            for response in handler(Event::new(id, EventName::Close, ())?).await {
+                                ws_sender.send(Message::Text(json::to_string(&response)?)).await?;
+                            }
+                            break;
                         }
-                        break;
+                        EventName::ClearExisted  => if json::from_value::<i32>(msg.dat).unwrap_or(id) != id {
+                            for response in handler(Event::new(id, EventName::Close, ())?).await {
+                                ws_sender.send(Message::Text(json::to_string(&response)?)).await?;
+                            }
+                            break;
+                        }
+                        _ => {
+                            ws_sender.send(Message::Text(json::to_string(&msg)?)).await?;
+                        }
                     }
-
-                    ws_sender.send(Message::Text(json::to_string(&msg)?)).await?;
                 }
         }
     }

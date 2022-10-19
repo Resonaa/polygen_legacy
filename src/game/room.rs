@@ -1,17 +1,29 @@
-use super::{core::map::Map, player::Player};
+use super::player::Player;
 use rocket::serde::{Deserialize, Serialize};
 use std::{collections::HashMap, iter::repeat_with};
 
-#[derive(Serialize, Deserialize, Debug, Copy, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 #[serde(crate = "rocket::serde")]
-pub enum RoomStatus {
-    Waiting,
-    Ongoing,
+pub enum RoomMode {
+    Hexagon,
+    Quadrilateral,
 }
 
-impl Default for RoomStatus {
+impl Default for RoomMode {
     fn default() -> Self {
-        Self::Waiting
+        Self::Hexagon
+    }
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Copy)]
+#[serde(crate = "rocket::serde")]
+pub enum RoomMap {
+    Random,
+}
+
+impl Default for RoomMap {
+    fn default() -> Self {
+        Self::Random
     }
 }
 
@@ -19,9 +31,10 @@ impl Default for RoomStatus {
 #[serde(crate = "rocket::serde")]
 pub struct Room {
     pub players: HashMap<String, Player>,
-    pub map: Map,
     pub rid: String,
-    pub status: RoomStatus,
+    pub ongoing: bool,
+    pub mode: RoomMode,
+    pub r#type: RoomMap,
 }
 
 impl Room {

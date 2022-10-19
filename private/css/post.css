@@ -37,7 +37,7 @@
 .grow-shadow:hover,
 .grow-shadow:focus,
 .grow-shadow:active {
-    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.3);
     -webkit-transform: scale(1.01);
     transform: scale(1.01);
 }
