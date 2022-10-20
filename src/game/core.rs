@@ -18,7 +18,7 @@ pub mod land;
 pub mod map;
 
 lazy_static! {
-    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(vec![Room::new(), Room::new()]);
+    pub static ref ROOMS: Mutex<Vec<Room>> = Mutex::new(vec![Room::new("161")]);
     pub static ref IDENTITIES: Mutex<HashMap<String, String>> = Mutex::new(HashMap::new());
     pub static ref PLAYERS: Mutex<HashMap<i32, String>> = Mutex::new(HashMap::new());
 }
@@ -26,8 +26,13 @@ lazy_static! {
 pub async fn remove_player(username: &str) {
     remove_identity(username).await;
 
-    for room in &mut *ROOMS.lock().await {
+    let rooms = &mut *ROOMS.lock().await;
+
+    for (index, room) in rooms.iter_mut().enumerate() {
         if room.players.remove(username).is_some() {
+            if room.players.is_empty() && room.rid != "161" {
+                rooms.remove(index);
+            }
             return;
         }
     }

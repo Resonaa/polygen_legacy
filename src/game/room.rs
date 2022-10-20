@@ -1,6 +1,6 @@
 use super::player::Player;
 use rocket::serde::{Deserialize, Serialize};
-use std::{collections::HashMap, iter::repeat_with};
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]
 #[serde(crate = "rocket::serde")]
@@ -34,13 +34,22 @@ pub struct Room {
     pub rid: String,
     pub ongoing: bool,
     pub mode: RoomMode,
-    pub r#type: RoomMap,
+    pub map: RoomMap,
 }
 
 impl Room {
-    pub fn new() -> Self {
+    pub fn new(rid: &str) -> Self {
         Self {
-            rid: repeat_with(fastrand::alphanumeric).take(5).collect(),
+            rid: rid.to_string(),
+            ..Default::default()
+        }
+    }
+
+    pub fn create(rid: &str, mode: RoomMode, map: RoomMap) -> Self {
+        Self {
+            rid: rid.to_string(),
+            mode,
+            map,
             ..Default::default()
         }
     }

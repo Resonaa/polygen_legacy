@@ -1,7 +1,7 @@
 pub mod core;
 mod event;
 pub mod player;
-mod room;
+pub mod room;
 mod socket;
 
 pub use self::core::game;

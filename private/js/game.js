@@ -21,7 +21,7 @@ $(() => {
         $("tbody").append(roomTemplate.render({
             ongoing: room.ongoing,
             mode: translation[room.mode],
-            map: translation[room.type],
+            map: translation[room.map],
             players: players.substring(0, players.length - 2),
             rid: room.rid
         }));
@@ -31,5 +31,18 @@ $(() => {
         for (let room of rooms) {
             addRoom(room);
         }
+    });
+
+    $(".form> button").click(() => {
+        disableButton(".form> button");
+
+        ajax("post", "/api/room", { rid: $("#rid").val(), mode: $("#mode").val(), map: $("#map").val() }, msg => {
+            if (msg == "房间已存在") {
+                window.open(`/game/${$("#rid").val()}`);
+            } else {
+                toast("error", "创建失败", msg);
+                enableButton(".form> button");
+            }
+        }, () => window.open(`/game/${$("#rid").val()}`))
     });
 });
