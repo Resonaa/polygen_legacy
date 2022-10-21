@@ -51,6 +51,9 @@ async function renderText(s) {
 
     a.innerHTML = await Vditor.md2html(s.trim(), {
         anchor: 1,
+        math: {
+            inlineDigit: true
+        }
     });
 
     addAt(a);

@@ -7,10 +7,10 @@ pub mod api;
 pub mod db;
 pub mod error;
 pub mod game;
+pub mod index;
 pub mod post;
 mod response;
 pub mod session;
-pub mod index;
 
 use regex::Regex;
 pub use response::Response;

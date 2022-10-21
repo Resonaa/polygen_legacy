@@ -7,7 +7,7 @@ use hashbrown::HashMap;
 use log::info;
 use rocket::{
     serde::{
-        json::{self, Value},
+        json::{self, json, Value},
         Deserialize, Serialize,
     },
     tokio::sync::Mutex,
@@ -108,11 +108,21 @@ pub async fn game() {
 
         match event.name {
             EventName::Close => {
+                // 关闭连接
                 remove_player(&username).await;
                 PLAYERS.lock().await.remove(&event.id);
                 events![]
             }
-            EventName::Message => events![[0, EventName::WorldMessage, event.dat]],
+            EventName::WorldMessage | EventName::RoomMessage
+                if event.dat.to_string().chars().count() <= 161 =>
+            {
+                events![[
+                    // 聊天信息打包后转发
+                    0,
+                    event.name,
+                    json!( {"sender": username, "message": event.dat})
+                ]]
+            }
             _ => events![],
         }
     })

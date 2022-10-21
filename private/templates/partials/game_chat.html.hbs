@@ -1,0 +1,25 @@
+<script id="chat-template" type="text/template">
+<div class="comment">
+    <div class="content">
+        <a href="/user/${sender}">${sender}</a>
+        <div class="metadata">
+            <div class="date">${time}</div>
+            {@if type == "WorldMessage"}
+            <div class="ui mini blue label">世界</div>
+            {@else if type == "RoomMessage"}
+            <div class="ui mini yellow label">房间</div>
+            {@else if type == "TeamMessage"}
+            <div class="ui mini orange label">队伍</div>
+            {@else}
+            <div class="ui mini red label">定向</div>
+            {@/if}
+        </div>
+        <div class="chat-content">
+            $${message}
+        </div>
+        <div class="actions">
+            <a class="reply">回复</a>
+        </div>
+    </div>
+</div>
+</script>

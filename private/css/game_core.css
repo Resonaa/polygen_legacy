@@ -1,0 +1,53 @@
+body {
+    background-color: black;
+}
+
+.main.grid.container {
+    margin: 0;
+    width: 100% !important;
+}
+
+#catch-the-cat {
+    display: flex;
+    justify-content: center;
+    filter: grayscale(1) invert(1);
+}
+
+textarea {
+    background: rgb(27, 28, 29) !important;
+    color: white !important;
+    border: 1px solid white !important;
+}
+
+textarea:focus {
+    border: 1px solid skyblue !important;
+}
+
+.world-message {
+    color: deepskyblue !important;
+}
+
+.room-message {
+    color: yellow !important;
+}
+
+.team-message {
+    color: orange !important;
+}
+
+.directed-message {
+    color: red !important;
+}
+
+.comments {
+    max-height: 22em;
+    overflow: auto;
+}
+
+.comment {
+    padding: unset !important;
+    margin: .3em 0 0 !important;
+    overflow-wrap: break-word;
+    overflow-y: auto;
+    max-height: 200px;
+}

@@ -62,7 +62,7 @@ $(async () => {
 
                 $(".reply").last().click(() => {
                     vditor.setValue(`@${i.author} ${vditor.getValue()}`);
-                    vditor.focus()
+                    vditor.focus();
                 });
             }
 

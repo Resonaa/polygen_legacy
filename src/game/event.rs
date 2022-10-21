@@ -11,7 +11,8 @@ pub enum EventName {
     Message,
     Identify,
     WorldMessage,
-    ClearExisted
+    RoomMessage,
+    ClearExisted,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
