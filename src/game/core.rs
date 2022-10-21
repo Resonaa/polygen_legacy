@@ -89,19 +89,17 @@ pub async fn game() {
         info!("{:?}", event);
 
         if event.name == EventName::Identify {
-            if let Ok(username) = identify(event.dat).await {
-                PLAYERS.lock().await.insert(event.id, username);
-                return events![
-                    [0, EventName::ClearExisted, event.id], // 清除旧连接
-                    [event.id, EventName::Message, "身份验证成功"]
-                ];
-            } else {
-                return events![[event.id, EventName::Abort, ()]];
-            }
+            return match identify(event.dat).await {
+                Ok(username) => {
+                    PLAYERS.lock().await.insert(event.id, username);
+                    events![[0, EventName::ClearExisted, ()]]
+                }
+                _ => events![[event.id, EventName::Close, ()]],
+            };
         }
 
         let username = match PLAYERS.lock().await.get(&event.id) {
-            None => return events![[event.id, EventName::Abort, ()]],
+            None => return events![[event.id, EventName::Close, ()]],
             Some(username) => username,
         }
         .to_string();
@@ -110,7 +108,6 @@ pub async fn game() {
             EventName::Close => {
                 // 关闭连接
                 remove_player(&username).await;
-                PLAYERS.lock().await.remove(&event.id);
                 events![]
             }
             EventName::WorldMessage | EventName::RoomMessage

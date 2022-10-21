@@ -7,7 +7,6 @@ use rocket::serde::{
 #[serde(crate = "rocket::serde")]
 pub enum EventName {
     Close,
-    Abort,
     Message,
     Identify,
     WorldMessage,

@@ -68,7 +68,7 @@ $(async () => {
     }
 
     $(".submit.button").click(() => {
-        const message = $("textarea").val();
+        const message = $("textarea").val().trim();
 
         if (message.length < 1) {
             return;

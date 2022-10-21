@@ -85,22 +85,16 @@ async fn handle_connection<T: futures_util::Future<Output = Vec<Event>>>(
             Ok(msg) = receiver.recv() => // 来自本地回复的消息
                 if msg.id == id || msg.id == 0 {
                     match msg.name {
-                        EventName::Abort => { // 关闭远程连接
+                        EventName::Close => {
                             for response in handler(Event::new(id, EventName::Close, ())?).await {
-                                ws_sender.send(Message::Text(json::to_string(&response)?)).await?;
+                                sender.send(response)?;
                             }
                             break;
                         }
                         EventName::ClearExisted  =>  { // 清除旧连接
-                            let remote_id: i32 = json::from_value::<i32>(msg.dat).unwrap_or(id);
-
-                            let players = &*PLAYERS.lock().await;
-                            let remote_username = players.get(&remote_id).unwrap();
-                            let username = players.get(&id).unwrap();
-
-                            if remote_id != id && remote_username == username {
+                            if PLAYERS.lock().await.get(&id).is_none() {
                                 for response in handler(Event::new(id, EventName::Close, ())?).await {
-                                    ws_sender.send(Message::Text(json::to_string(&response)?)).await?;
+                                    sender.send(response)?;
                                 }
                                 break;
                             }
